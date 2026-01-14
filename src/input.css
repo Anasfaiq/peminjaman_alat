@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-gray-100 text-gray-900;
+  }
+
+  main {
+    @apply min-h-screen flex items-center justify-center;
+  }
+}
+
+@layer components {
+  .card{
+    @apply w-1/2 rounded-4xl shadow-2xl bg-white
+          flex gap-2 overflow-auto;
+
+    height: 32rem;
+  }
+
+  .left{
+    @apply flex-1 flex flex-col items-center justify-center
+          p-6 gap-4;
+  }
+
+  .left h2 {
+    @apply text-4xl font-bold;
+  }
+
+  .input-group {
+    @apply w-full mb-5 relative flex flex-col items-center
+          gap-2;
+  }
+
+  .left label {
+    @apply absolute left-12 top-4
+          bg-white px-1 text-gray-500 text-sm
+          transition-all duration-200
+          pointer-events-none;
+
+    /* posisi awal */
+    transform-origin: left top;
+  }
+
+  .left input:focus {
+    @apply outline-none
+  }
+
+  /* saat input focus atau ada isinya */
+  .left input:focus + label,
+  .left input:not(:placeholder-shown) + label {
+    @apply -top-2 text-xs text-blue-500;
+  }
+
+  .left input {
+    @apply w-96 border border-gray-300 rounded-xl
+          px-4 py-3 text-lg
+          focus:border-blue-500 transition;
+  }
+
+  .left form {
+    @apply w-full flex flex-col items-center;
+  }
+
+  .left button {
+    @apply bg-indigo-600 text-white text-lg font-semibold
+          rounded-xl px-6 py-3 mt-4 w-48
+          hover:bg-indigo-700 transition;
+  }
+
+  .right{
+    @apply flex-1 bg-indigo-600 flex flex-col text-center gap-3 items-center justify-center
+          text-white text-3xl font-bold;
+    border-radius: 150px 0 0 150px;
+  }
+
+  .right p{
+    @apply text-sm font-normal;
+  }
+
+  .right button{
+    @apply border text-sm border-white rounded-xl mt-4 px-4 py-2
+          hover:bg-white hover:text-blue-500 transition;
+    width: 160px;
+  }
+}
