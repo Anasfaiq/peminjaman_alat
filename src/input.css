@@ -12,18 +12,18 @@
 
 @layer components {
   .card{
-    @apply w-1/2 rounded-4xl shadow-2xl bg-white
-          flex gap-2 overflow-auto;
+    @apply relative w-1/2 rounded-4xl shadow-2xl bg-white
+          flex gap-2 overflow-hidden;
 
     height: 32rem;
   }
 
-  .left{
+  .left, .right-form{
     @apply flex-1 flex flex-col items-center justify-center
-          p-6 gap-4;
+          p-6 gap-4 transition-transform duration-500;
   }
 
-  .left h2 {
+  .left h2, .right-form h2 {
     @apply text-4xl font-bold;
   }
 
@@ -42,7 +42,7 @@
     transform-origin: left top;
   }
 
-  .left input:focus {
+  .left input:focus, .right-form input:focus {
     @apply outline-none
   }
 
@@ -52,25 +52,25 @@
     @apply -top-2 text-xs text-blue-500;
   }
 
-  .left input {
+  .left input, .right-form input {
     @apply w-96 border border-gray-300 rounded-xl
           px-4 py-3 text-lg
           focus:border-blue-500 transition;
   }
 
-  .left form {
+  .left form, .right-form form {
     @apply w-full flex flex-col items-center;
   }
 
-  .left button {
+  .left button, .right-form button {
     @apply bg-indigo-600 text-white text-lg font-semibold
           rounded-xl px-6 py-3 mt-4 w-48
           hover:bg-indigo-700 transition;
   }
 
   .right{
-    @apply flex-1 bg-indigo-600 flex flex-col text-center gap-3 items-center justify-center
-          text-white text-3xl font-bold;
+    @apply flex-1 z-50 bg-indigo-600 flex flex-col text-center gap-3 items-center justify-center
+          text-white text-3xl font-bold transition-transform duration-500;
     border-radius: 150px 0 0 150px;
   }
 
@@ -83,4 +83,39 @@
           hover:bg-white hover:text-blue-500 transition;
     width: 160px;
   }
+
+  .right-form {
+    @apply z-10 right-0 absolute rounded-4xl
+          translate-x-full inset-0;
+  }
+
+  .right-form label {
+    @apply absolute left-70 top-4
+          bg-white px-1 text-gray-500 text-sm
+          transition-all duration-200
+          pointer-events-none;
+
+    /* posisi awal */
+    transform-origin: left top;
+  }
+
+  .right-form input:focus + label,
+  .right-form input:not(:placeholder-shown) + label {
+    @apply -top-2 text-xs text-blue-500;
+  }
+
+  .signup-active .right {
+    @apply -translate-x-127;
+    border-radius: 0 150px 150px 0;
+  }
+
+  .signup-active .left {
+    @apply -translate-x-full;
+  }
+
+  .signup-active .right-form {
+    @apply translate-x-55;
+  }
+
+
 }

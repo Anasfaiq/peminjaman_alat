@@ -200,17 +200,18 @@
 }
 @layer components {
   .card {
+    position: relative;
     display: flex;
     width: calc(1/2 * 100%);
     gap: calc(var(--spacing) * 2);
-    overflow: auto;
+    overflow: hidden;
     border-radius: var(--radius-4xl);
     background-color: var(--color-white);
     --tw-shadow: 0 25px 50px -12px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
     height: 32rem;
   }
-  .left {
+  .left, .right-form {
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -218,8 +219,13 @@
     justify-content: center;
     gap: calc(var(--spacing) * 4);
     padding: calc(var(--spacing) * 6);
+    transition-property: transform, translate, scale, rotate;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+    --tw-duration: 500ms;
+    transition-duration: 500ms;
   }
-  .left h2 {
+  .left h2, .right-form h2 {
     font-size: var(--text-4xl);
     line-height: var(--tw-leading, var(--text-4xl--line-height));
     --tw-font-weight: var(--font-weight-bold);
@@ -251,7 +257,7 @@
     transition-duration: 200ms;
     transform-origin: left top;
   }
-  .left input:focus {
+  .left input:focus, .right-form input:focus {
     --tw-outline-style: none;
     outline-style: none;
   }
@@ -261,7 +267,7 @@
     line-height: var(--tw-leading, var(--text-xs--line-height));
     color: var(--color-blue-500);
   }
-  .left input {
+  .left input, .right-form input {
     width: calc(var(--spacing) * 96);
     border-radius: var(--radius-xl);
     border-style: var(--tw-border-style);
@@ -278,13 +284,13 @@
       border-color: var(--color-blue-500);
     }
   }
-  .left form {
+  .left form, .right-form form {
     display: flex;
     width: 100%;
     flex-direction: column;
     align-items: center;
   }
-  .left button {
+  .left button, .right-form button {
     margin-top: calc(var(--spacing) * 4);
     width: calc(var(--spacing) * 48);
     border-radius: var(--radius-xl);
@@ -306,6 +312,7 @@
     }
   }
   .right {
+    z-index: 50;
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -319,6 +326,11 @@
     --tw-font-weight: var(--font-weight-bold);
     font-weight: var(--font-weight-bold);
     color: var(--color-white);
+    transition-property: transform, translate, scale, rotate;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+    --tw-duration: 500ms;
+    transition-duration: 500ms;
     border-radius: 150px 0 0 150px;
   }
   .right p {
@@ -351,6 +363,51 @@
       }
     }
     width: 160px;
+  }
+  .right-form {
+    position: absolute;
+    inset: calc(var(--spacing) * 0);
+    right: calc(var(--spacing) * 0);
+    z-index: 10;
+    --tw-translate-x: 100%;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+    border-radius: var(--radius-4xl);
+  }
+  .right-form label {
+    pointer-events: none;
+    position: absolute;
+    top: calc(var(--spacing) * 4);
+    left: calc(var(--spacing) * 70);
+    background-color: var(--color-white);
+    padding-inline: calc(var(--spacing) * 1);
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+    color: var(--color-gray-500);
+    transition-property: all;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+    --tw-duration: 200ms;
+    transition-duration: 200ms;
+    transform-origin: left top;
+  }
+  .right-form input:focus + label, .right-form input:not(:placeholder-shown) + label {
+    top: calc(var(--spacing) * -2);
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+    color: var(--color-blue-500);
+  }
+  .signup-active .right {
+    --tw-translate-x: calc(var(--spacing) * -127);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+    border-radius: 0 150px 150px 0;
+  }
+  .signup-active .left {
+    --tw-translate-x: -100%;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .signup-active .right-form {
+    --tw-translate-x: calc(var(--spacing) * 55);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
   }
 }
 @property --tw-shadow {
@@ -418,11 +475,11 @@
   inherits: false;
   initial-value: 0 0 #0000;
 }
-@property --tw-font-weight {
+@property --tw-duration {
   syntax: "*";
   inherits: false;
 }
-@property --tw-duration {
+@property --tw-font-weight {
   syntax: "*";
   inherits: false;
 }
@@ -430,6 +487,21 @@
   syntax: "*";
   inherits: false;
   initial-value: solid;
+}
+@property --tw-translate-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-translate-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-translate-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
 }
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
@@ -448,9 +520,12 @@
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
-      --tw-font-weight: initial;
       --tw-duration: initial;
+      --tw-font-weight: initial;
       --tw-border-style: solid;
+      --tw-translate-x: 0;
+      --tw-translate-y: 0;
+      --tw-translate-z: 0;
     }
   }
 }
