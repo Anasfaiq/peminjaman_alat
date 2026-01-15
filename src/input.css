@@ -11,19 +11,21 @@
     @apply min-h-screen flex items-center justify-center;
   }
 
-  .card{
+  .card {
     @apply relative w-1/2 rounded-4xl shadow-2xl bg-white
           flex gap-2 overflow-hidden;
 
     height: 32rem;
   }
 
-  .left, .right-form{
+  .left,
+  .right-form {
     @apply flex-1 flex flex-col items-center justify-center
           p-6 gap-4 transition-transform duration-500;
   }
 
-  .left h2, .right-form h2 {
+  .left h2,
+  .right-form h2 {
     @apply text-4xl font-bold;
   }
 
@@ -42,8 +44,9 @@
     transform-origin: left top;
   }
 
-  .left input:focus, .right-form input:focus {
-    @apply outline-none
+  .left input:focus,
+  .right-form input:focus {
+    @apply outline-none;
   }
 
   /* saat input focus atau ada isinya */
@@ -52,33 +55,36 @@
     @apply -top-2 text-xs text-blue-500;
   }
 
-  .left input, .right-form input {
+  .left input,
+  .right-form input {
     @apply w-96 border border-gray-300 rounded-xl
           px-4 py-3 text-lg
           focus:border-blue-500 transition;
   }
 
-  .left form, .right-form form {
+  .left form,
+  .right-form form {
     @apply w-full flex flex-col items-center;
   }
 
-  .left button, .right-form button {
+  .left button,
+  .right-form button {
     @apply bg-indigo-600 text-white text-lg font-semibold
           rounded-xl px-6 py-3 mt-4 w-48
           hover:bg-indigo-700 transition;
   }
 
-  .right{
+  .right {
     @apply flex-1 z-50 bg-indigo-600 flex flex-col text-center gap-3 items-center justify-center
           text-white text-3xl font-bold transition-transform duration-500;
     border-radius: 150px 0 0 150px;
   }
 
-  .right p{
+  .right p {
     @apply text-sm font-normal;
   }
 
-  .right button{
+  .right button {
     @apply border text-sm border-white rounded-xl mt-4 px-4 py-2
           hover:bg-white hover:text-blue-500 transition;
     width: 160px;
@@ -117,17 +123,23 @@
     @apply translate-x-55;
   }
 
-
-
   /* dashboard.html */
-  .container {
-    @apply flex w-full;
-  }
-
   .navbar {
     @apply bg-white shadow-md w-full h-16
           flex justify-between items-center
-          p-6 gap-6;
+          py-10 px-6 gap-6;
+  }
+
+  .navbar p {
+    @apply text-2xl font-semibold;
+  }
+
+  .navbar div p {
+    @apply text-lg font-normal;
+  }
+
+  .navbar div {
+    @apply flex items-center gap-4;
   }
 
   .sidebar {
@@ -137,7 +149,11 @@
   }
 
   .right-dashboard-section {
-    @apply flex-1;
+    @apply w-full;
+  }
+
+  .sidebar a {
+    @apply outline-none;
   }
 
   .sidebar h2 {
@@ -161,4 +177,88 @@
           rounded-full flex items-center justify-center
           text-3xl font-bold;
   }
+
+  .dashboard-content {
+    @apply flex flex-col gap-6 p-6;
+  }
+
+  .dashboard-cards {
+    @apply grid grid-cols-4 gap-6;
+  }
+
+  .dashboard-card {
+    @apply bg-white p-6 rounded-lg 
+          shadow-md flex justify-between
+          items-center;
+  }
+
+  .card-text {
+    @apply flex flex-col gap-2;
+  }
+
+  .card-text h3 {
+    @apply text-sm text-gray-500;
+  }
+
+  .card-text p {
+    @apply text-2xl font-bold;
+  }
+
+  .icon-wrapper {
+    @apply w-12 h-12 rounded-xl
+          flex items-center justify-center
+          text-2xl;
+  }
+
+  .total-equipment-icon {
+    @apply bg-indigo-100 text-indigo-600;
+  }
+
+  .active-borrows-icon {
+    @apply bg-blue-100 text-blue-600;
+  }
+
+  .pending-requests-icon {
+    @apply bg-yellow-100 text-yellow-600;
+  }
+
+  .returned-today-icon {
+    @apply bg-green-100 text-green-600;
+  }
+
+  .recent-activity-card {
+    @apply p-6 shadow-md 
+          bg-white rounded-xl
+          flex flex-col gap-9;
+  }
+
+  .recent-activity-card h3 {
+    @apply text-lg font-semibold;
+  }
+
+  .activity-wrapper {
+    @apply flex gap-4;
+  }
+
+  .profile {
+    @apply w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center;
+  }
+
+  
+  .profile p {
+    @apply font-semibold;
+  }
+
+  .user-activity {
+    @apply text-blue-500;
+  }
+
+  .username {
+    @apply font-semibold text-black
+  }
+
+  .activity-time {
+    @apply text-gray-400 text-sm;
+  }
+
 }
