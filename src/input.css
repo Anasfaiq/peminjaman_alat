@@ -126,30 +126,46 @@
   /* dashboard.html */
   .navbar {
     @apply bg-white shadow-md w-full h-16
-          flex justify-between items-center
-          py-10 px-6 gap-6;
+          flex justify-between items-center rounded-xl
+          py-12 px-6 gap-6;
   }
 
   .navbar p {
     @apply text-2xl font-semibold;
   }
 
-  .navbar div p {
-    @apply text-lg font-normal;
+  .navbar div button p {
+    @apply text-lg font-semibold;
   }
 
-  .navbar div {
-    @apply flex items-center gap-4;
+  .navbar div button {
+    @apply flex items-center gap-3;
+  }
+
+  .user-account {
+    @apply text-sm;
+  }
+
+  .user-account span {
+    @apply text-sm text-gray-500 font-semibold;
   }
 
   .sidebar {
     @apply bg-white flex flex-col
-          w-64 h-screen px-4 py-6
+          w-64 h-auto p-6 rounded-xl
           shadow-md;
   }
 
+  .sidebar div {
+    @apply flex flex-col gap-2;
+  }
+
+  .sidebar p {
+    @apply text-sm text-gray-400;
+  }
+
   .right-dashboard-section {
-    @apply w-full;
+    @apply w-full flex flex-col gap-6;
   }
 
   .sidebar a {
@@ -157,17 +173,16 @@
   }
 
   .sidebar h2 {
-    @apply text-2xl text-center font-semibold
-          mb-4;
+    @apply text-2xl font-semibold;
   }
 
   .sidebar ul {
-    @apply flex flex-col;
+    @apply flex flex-col mt-2;
   }
 
   .sidebar li {
     @apply flex gap-2 items-center
-          p-3 mt-2 rounded-lg
+          p-3 rounded-lg whitespace-nowrap
           hover:bg-indigo-600 hover:text-white
           transition-colors duration-200;
   }
@@ -179,7 +194,7 @@
   }
 
   .dashboard-content {
-    @apply flex flex-col gap-6 p-6;
+    @apply flex flex-col gap-6;
   }
 
   .dashboard-cards {
@@ -262,7 +277,143 @@
 
   /* alat.html */
   .equipment-card {
-    @apply bg-white p-6 rounded-xl shadow-md mt-6;
+    @apply bg-white p-6 rounded-xl shadow-md
+          flex flex-col gap-6;
   }
-  
+
+  .top-equipment-section {
+    @apply flex justify-between;
+  }
+
+  .top-equipment-section {
+    @apply font-semibold text-lg;
+  }
+
+  .search-section {
+    @apply flex flex-col gap-4;
+  }
+
+  .search-section div {
+    @apply flex flex-1 items-center gap-2 relative;
+  }
+
+  .top-equipment-section button {
+    @apply flex items-center gap-2
+          bg-indigo-600 text-white
+          py-2 px-4 rounded-xl
+          hover:text-indigo-600 hover:bg-white hover:border-indigo-600 hover:border
+          transition-colors duration-200;
+  }
+
+  .bottom-equipment-section {
+    @apply flex;
+  }
+
+  .bottom-equipment-section div {
+    @apply flex-1;
+  }
+
+  .bottom-equipment-section select {
+    @apply border border-gray-300
+          rounded-xl py-2 px-4;
+  }
+
+  .bottom-equipment-section div input {
+    @apply border border-gray-300
+          rounded-xl py-2 px-4 w-full
+          focus:outline-blue-600;
+  }
+
+  .bottom-equipment-section div svg {
+    @apply absolute;
+  }
+
+  .delete-button {
+    @apply flex items-center justify-center
+           h-8 w-8 rounded-xl
+          text-red-500 hover:bg-red-100
+          transition-colors duration-200;
+  }
+
+  .edit-button {
+    @apply flex items-center justify-center
+           h-8 w-8 rounded-xl
+          text-indigo-500 hover:bg-indigo-100
+          transition-colors duration-200;
+  }
+
+  .button-wrapper {
+    @apply flex gap-2;
+  }
+
+  .crud-table {
+    @apply w-full rounded-xl;
+  }
+
+  .crud-table td {
+    @apply pl-4 py-3
+          text-sm;
+  }
+
+  .crud-table thead {
+    @apply border-b border-gray-200;
+  }
+
+  .crud-table tbody {
+    @apply border-b border-gray-100;
+  }
+
+  .table-header {
+    @apply font-semibold;
+  }
+
+  .equipment-status span {
+    @apply bg-green-200 py-1 px-3 rounded-full text-green-800 font-semibold;
+  }
+
+  /* User Dropdown Menu */
+  .user-dropdown-wrapper {
+    @apply relative;
+  }
+
+  .user-dropdown-button {
+    @apply flex items-center gap-3
+          px-4 py-2 rounded-xl
+          hover:bg-gray-100 transition-colors
+          duration-200 cursor-pointer border-none;
+  }
+
+  .dropdown-arrow {
+    @apply transition-transform duration-200;
+  }
+
+  .user-dropdown-button.active .dropdown-arrow {
+    @apply rotate-180;
+  }
+
+  .user-dropdown-menu {
+    @apply absolute top-16 right-0 bg-white
+          rounded-xl shadow-xl border border-gray-200
+          overflow-hidden z-50 min-w-48;
+  }
+
+  .user-dropdown-menu.hidden {
+    @apply hidden;
+  }
+
+  .dropdown-item {
+    @apply flex items-center gap-3
+          px-4 py-3 text-gray-700
+          hover:bg-gray-100 transition-colors
+          duration-200 text-sm font-medium
+          border-b border-gray-100 last:border-b-0;
+  }
+
+  .dropdown-item.logout {
+    @apply text-red-500 hover:bg-red-50;
+  }
+
+  .dropdown-item svg {
+    @apply w-5 h-5;
+  }
 }
