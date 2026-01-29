@@ -2,16 +2,19 @@
 session_start();
 include 'conn.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $id_user = $_POST['id_user'];
   $username = $_POST['username'];
   $password = $_POST['password'];
   $sql = "SELECT * FROM users WHERE username='$username'";
   $result = mysqli_query($conn, $sql);
   if (mysqli_num_rows($result) == 1) {
     $data = mysqli_fetch_assoc($result);
+    $_SESSION['id_user'] = $data['id_user'];
     $_SESSION['username'] = $data['username'];
     $_SESSION['role'] = $data['role'];
 
     if (password_verify($password, $data['password'])) {
+      $_SESSION['id_user'] = $data['id_user'];
       $_SESSION['username'] = $data['username'];
       $_SESSION['role'] = $data['role'];
 

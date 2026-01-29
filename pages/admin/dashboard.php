@@ -1,6 +1,29 @@
 <?php
   session_start();
-  include "../../config/conn.php"
+  include "../../config/conn.php";
+
+  if (!isset($_SESSION['id_user'])) {
+    die("Belum Login!");
+  }
+
+  $id_user = $_SESSION['id_user'];
+  $sql = mysqli_query($conn, "SELECT nama FROM users WHERE id_user='$id_user'");
+  $data = mysqli_fetch_assoc($sql);
+
+  //logic buat ngitung total user
+  $user_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM users");
+  $total_user = mysqli_fetch_assoc($user_query)['total'];
+
+  // logic buat ngitung total equipment
+  $eq_query = mysqli_query($conn, "SELECT SUM(stok) as total_stok FROM alat");
+  $total_alat = mysqli_fetch_assoc($eq_query)['total_stok'];
+
+  // logic buat ngitung active borrows
+  $br_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM peminjaman
+                                                 WHERE status='Disetujui' AND id_peminjaman
+                                                 NOT IN (SELECT id_peminjaman FROM pengembalian)");
+  $active_borrow = mysqli_fetch_assoc($br_query)['total'];
+
 ?>
 
 <!DOCTYPE html>
@@ -195,7 +218,7 @@
               </svg>
             </div>
             <div class="user-account">
-              <p>Admin User</p>
+              <p><?=  $data['nama']; ?></p>
               <span>Administrator</span>
             </div>
             <svg
@@ -278,10 +301,35 @@
         <section class="dashboard-cards">
           <div class="dashboard-card">
             <span class="card-text">
-              <h3>Total Equipment</h3>
-              <p>150</p>
+              <h3>Total User</h3>
+              <p><?= $total_user ?></p>
             </span>
             <span class="total-equipment-icon icon-wrapper">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+              </svg>
+            </span>
+          </div>
+
+          <div class="dashboard-card">
+            <span class="card-text">
+              <h3>Total Equipment</h3>
+              <p><?= $total_alat ?></p>
+            </span>
+            <span class="active-borrows-icon icon-wrapper">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -305,70 +353,26 @@
           <div class="dashboard-card">
             <span class="card-text">
               <h3>Active Borrows</h3>
-              <p>12</p>
+              <p><?= $active_borrow ?></p>
             </span>
-            <span class="active-borrows-icon icon-wrapper">
-              <svg
+            <span class="active-borrow-icon icon-wrapper">
+              <svg 
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
+                width="24" 
+                height="24" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                stroke-width="2" 
+                stroke-linecap="round" 
                 stroke-linejoin="round"
               >
-                <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
-                <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
-              </svg>
-            </span>
-          </div>
-
-          <div class="dashboard-card">
-            <span class="card-text">
-              <h3>Pending Requests</h3>
-              <p>5</p>
-            </span>
-            <span class="pending-requests-icon icon-wrapper">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-                <path d="M12 7v5l3 3" />
-              </svg>
-            </span>
-          </div>
-
-          <div class="dashboard-card">
-            <span class="card-text">
-              <h3>Returned Today</h3>
-              <p>8</p>
-            </span>
-            <span class="returned-today-icon icon-wrapper">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                <path d="M9 12l2 2l4 -4" />
+                <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"/>
+                <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"/>
+                <path d="M9 12l.01 0"/>
+                <path d="M13 12l2 0"/>
+                <path d="M9 16l.01 0"/>
+                <path d="M13 16l2 0"/>
               </svg>
             </span>
           </div>
@@ -378,7 +382,6 @@
           <h3>Recent Activity</h3>
           <div class="activity-wrapper">
             <div class="profile">
-              <p>J</p>
             </div>
             <div class="activity">
               <p>
@@ -390,7 +393,6 @@
           </div>
           <div class="activity-wrapper">
             <div class="profile">
-              <p>J</p>
             </div>
             <div class="activity">
               <p>
@@ -402,7 +404,6 @@
           </div>
           <div class="activity-wrapper">
             <div class="profile">
-              <p>J</p>
             </div>
             <div class="activity">
               <p>
@@ -414,7 +415,6 @@
           </div>
           <div class="activity-wrapper">
             <div class="profile">
-              <p>J</p>
             </div>
             <div class="activity">
               <p>
@@ -426,7 +426,6 @@
           </div>
           <div class="activity-wrapper">
             <div class="profile">
-              <p>J</p>
             </div>
             <div class="activity">
               <p>
