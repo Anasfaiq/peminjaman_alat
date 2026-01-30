@@ -1,9 +1,14 @@
+<?php
+  session_start();
+  include '../../config/conn.php';
+?>  
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Peminjaman Alat | User</title>
+    <title>Peminjaman Alat | Data Peminjaman</title>
     <link rel="stylesheet" href="../../src/output.css" />
   </head>
   <body class="flex gap-6 min-h-screen w-full py-8 px-14">
@@ -170,7 +175,7 @@
 
     <main class="right-dashboard-section">
       <nav class="navbar">
-        <p>User Management</p>
+        <p>Data Peminjaman</p>
         <div class="user-dropdown-wrapper">
           <button id="userBtn" class="user-dropdown-button">
             <div class="user-icon">
@@ -272,7 +277,7 @@
       <div class="main-card">
         <section class="search-section">
           <div class="top-equipment-section">
-            <h3>Alat Management</h3>
+            <h3>Data Peminjaman</h3>
             <button>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -288,7 +293,7 @@
                 <path d="M12 5l0 14" />
                 <path d="M5 12l14 0" />
               </svg>
-              Add Alat
+              Add Peminjaman
             </button>
           </div>
         </section>
@@ -296,9 +301,10 @@
           <table class="crud-table">
             <thead>
               <tr>
-                <td class="table-header">Name</td>
-                <td class="table-header">Email</td>
-                <td class="table-header">Role</td>
+                <td class="table-header">Borrower Name</td>
+                <td class="table-header">Alat </td>
+                <td class="table-header">Tanggal Pinjam</td>
+                <td class="table-header">Tanggal Kembali</td>
                 <td class="table-header">Status</td>
                 <td class="table-header">Action</td>
               </tr>
@@ -308,6 +314,7 @@
                 <td>Laptop Dell XPS</td>
                 <td>Electronics</td>
                 <td>5</td>
+                <td>3</td>
                 <td class="equipment-status">
                   <span>Available</span>
                 </td>
@@ -358,6 +365,7 @@
                 <td>Laptop Dell XPS</td>
                 <td>Electronics</td>
                 <td>5</td>
+                <td>3</td>
                 <td class="equipment-status">
                   <span>Available</span>
                 </td>
@@ -408,6 +416,7 @@
                 <td>Laptop Dell XPS</td>
                 <td>Electronics</td>
                 <td>5</td>
+                <td>3</td>
                 <td class="equipment-status">
                   <span>Available</span>
                 </td>
@@ -458,6 +467,7 @@
                 <td>Laptop Dell XPS</td>
                 <td>Electronics</td>
                 <td>5</td>
+                <td>3</td>
                 <td class="equipment-status">
                   <span>Available</span>
                 </td>
@@ -508,6 +518,7 @@
                 <td>Laptop Dell XPS</td>
                 <td>Electronics</td>
                 <td>5</td>
+                <td>3</td>
                 <td class="equipment-status">
                   <span>Available</span>
                 </td>
@@ -558,7 +569,6 @@
         </section>
       </div>
     </main>
-
     <script src="./script.js"></script>
   </body>
 </html>
