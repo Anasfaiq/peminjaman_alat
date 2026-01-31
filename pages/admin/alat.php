@@ -365,7 +365,7 @@
                   } elseif ($status == "Rusak Berat") {
                     $statusColor = "bg-red-200 text-red-800";
                   } else {
-                    $statusColor = "gray";
+                    $statusColor = "bg-gray-200 text-gray-800";
                   }
               ?>
               <tr>
