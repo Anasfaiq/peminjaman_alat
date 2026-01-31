@@ -6,7 +6,13 @@
     die("Belum Login!");
   }
 
+  $id_user = $_SESSION['id_user'];
+
   $query = mysqli_query($conn, "SELECT * FROM kategori");
+
+  // ngambil nama user
+  $user = mysqli_query($conn, "SELECT * FROM users WHERE id_user='$id_user'");
+  $data = mysqli_fetch_assoc($user);
 ?>
 
 <!doctype html>
@@ -50,7 +56,7 @@
                 d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1"
               />
             </svg>
-            <a href="#">Dashboard</a>
+            <a href="dashboard.php">Dashboard</a>
           </li>
           <li>
             <svg
@@ -69,7 +75,7 @@
               <path d="M16 3.13a4 4 0 0 1 0 7.75" />
               <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
             </svg>
-            <a href="#">User Management</a>
+            <a href="user.php">User Management</a>
           </li>
           <li>
             <svg
@@ -89,7 +95,7 @@
               <path d="M12 12l-8 -4.5" />
               <path d="M16 5.25l-8 4.5" />
             </svg>
-            <a href="#">Alat Management</a>
+            <a href="alat.php">Alat Management</a>
           </li>
           <li>
             <svg
@@ -110,7 +116,7 @@
                 d="M17 16v2a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h2"
               />
             </svg>
-            <a href="#">Kategori Management</a>
+            <a href="kategori.php">Kategori Management</a>
           </li>
           <li>
             <svg
@@ -135,7 +141,7 @@
               <path d="M9 16l.01 0" />
               <path d="M13 16l2 0" />
             </svg>
-            <a href="#">Data Peminjaman</a>
+            <a href="data_peminjaman.php">Data Peminjaman</a>
           </li>
           <li>
             <svg
@@ -151,7 +157,7 @@
             >
               <path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5" />
             </svg>
-            <a href="#">Pengembalian</a>
+            <a href="pengembalian.php">Pengembalian</a>
           </li>
           <li>
             <svg
@@ -173,7 +179,7 @@
               <path d="M9 13l6 0" />
               <path d="M9 17l6 0" />
             </svg>
-            <a href="#">Log Aktivitas</a>
+            <a href="log_aktivitas.php">Log Aktivitas</a>
           </li>
         </ul>
       </nav>
@@ -201,7 +207,7 @@
               </svg>
             </div>
             <div class="user-account">
-              <p>Admin User</p>
+              <p><?= $data['nama'] ?></p>
               <span>Administrator</span>
             </div>
             <svg

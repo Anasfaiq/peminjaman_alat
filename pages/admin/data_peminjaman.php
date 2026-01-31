@@ -1,6 +1,22 @@
 <?php
   session_start();
   include '../../config/conn.php';
+
+  if (!isset($_SESSION['id_user'])) {
+    die("Belum Login!");
+  }
+
+  $id_user = $_SESSION['id_user'];
+
+ $query = mysqli_query($conn, 
+ "SELECT peminjaman.*, users.nama AS nama_peminjam, alat.nama_alat, detail_peminjaman.jumlah FROM peminjaman
+         JOIN users ON peminjaman.id_user = users.id_user
+         JOIN detail_peminjaman ON peminjaman.id_peminjaman = detail_peminjaman.id_peminjaman
+         JOIN alat ON detail_peminjaman.id_alat = alat.id_alat
+         ");
+
+  $nama = mysqli_query($conn, "SELECT * FROM users WHERE id_user='$id_user'");
+  $data = mysqli_fetch_assoc($nama);
 ?>  
 
 <!DOCTYPE html>
@@ -44,7 +60,7 @@
                 d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1"
               />
             </svg>
-            <a href="#">Dashboard</a>
+            <a href="dashboard.php">Dashboard</a>
           </li>
           <li>
             <svg
@@ -63,7 +79,7 @@
               <path d="M16 3.13a4 4 0 0 1 0 7.75" />
               <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
             </svg>
-            <a href="#">User Management</a>
+            <a href="user.php">User Management</a>
           </li>
           <li>
             <svg
@@ -83,7 +99,7 @@
               <path d="M12 12l-8 -4.5" />
               <path d="M16 5.25l-8 4.5" />
             </svg>
-            <a href="#">Alat Management</a>
+            <a href="alat.php">Alat Management</a>
           </li>
           <li>
             <svg
@@ -104,7 +120,7 @@
                 d="M17 16v2a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h2"
               />
             </svg>
-            <a href="#">Kategori Management</a>
+            <a href="kategori.php">Kategori Management</a>
           </li>
           <li>
             <svg
@@ -129,7 +145,7 @@
               <path d="M9 16l.01 0" />
               <path d="M13 16l2 0" />
             </svg>
-            <a href="#">Data Peminjaman</a>
+            <a href="data_peminjaman.php">Data Peminjaman</a>
           </li>
           <li>
             <svg
@@ -145,7 +161,7 @@
             >
               <path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5" />
             </svg>
-            <a href="#">Pengembalian</a>
+            <a href="pengembalian.php">Pengembalian</a>
           </li>
           <li>
             <svg
@@ -167,7 +183,7 @@
               <path d="M9 13l6 0" />
               <path d="M9 17l6 0" />
             </svg>
-            <a href="#">Log Aktivitas</a>
+            <a href="log_aktivitas.php">Log Aktivitas</a>
           </li>
         </ul>
       </nav>
@@ -195,7 +211,7 @@
               </svg>
             </div>
             <div class="user-account">
-              <p>Admin User</p>
+              <p><?= $data['nama'] ?></p>
               <span>Administrator</span>
             </div>
             <svg
@@ -310,13 +326,27 @@
               </tr>
             </thead>
             <tbody>
+              <?php
+                $no = 1;
+                while ($data = mysqli_fetch_assoc ($query)) :
+                  $status = $data['status'];
+                  if ($status == "Menunggu") {
+                    $statusColor = "bg-yellow-200 text-yellow-800";
+                  } else if ($status == "Disetujui") {
+                    $statusColor = "bg-green-200 text-green-800";
+                  } else if ($status == "Ditolak") {
+                    $statusColor = "bg-red-200 text-red-800";
+                  } else {
+                    $statusColor = "bg-gray-200 text-gray-200";
+                  }
+              ?>
               <tr>
-                <td>Laptop Dell XPS</td>
-                <td>Electronics</td>
-                <td>5</td>
-                <td>3</td>
+                <td><?= $data['nama_peminjam'] ?></td>
+                <td><?= $data['nama_alat'] ?></td>
+                <td><?= $data['tanggal_pinjam'] ?></td>
+                <td><?= $data['tanggal_kembali_rencana'] ?></td>
                 <td class="equipment-status">
-                  <span>Available</span>
+                  <span class="<?= $statusColor ?>"><?= $data['status'] ?></span>
                 </td>
                 <td class="button-wrapper">
                   <a href="#" class="edit-button">
@@ -360,210 +390,7 @@
                   </a>
                 </td>
               </tr>
-
-              <tr>
-                <td>Laptop Dell XPS</td>
-                <td>Electronics</td>
-                <td>5</td>
-                <td>3</td>
-                <td class="equipment-status">
-                  <span>Available</span>
-                </td>
-                <td class="button-wrapper">
-                  <a href="#" class="edit-button">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path
-                        d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"
-                      />
-                      <path d="M13.5 6.5l4 4" />
-                    </svg>
-                  </a>
-                  <a href="#" class="delete-button">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="M4 7l16 0" />
-                      <path d="M10 11l0 6" />
-                      <path d="M14 11l0 6" />
-                      <path
-                        d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"
-                      />
-                      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                    </svg>
-                  </a>
-                </td>
-              </tr>
-
-              <tr>
-                <td>Laptop Dell XPS</td>
-                <td>Electronics</td>
-                <td>5</td>
-                <td>3</td>
-                <td class="equipment-status">
-                  <span>Available</span>
-                </td>
-                <td class="button-wrapper">
-                  <a href="#" class="edit-button">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path
-                        d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"
-                      />
-                      <path d="M13.5 6.5l4 4" />
-                    </svg>
-                  </a>
-                  <a href="#" class="delete-button">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="M4 7l16 0" />
-                      <path d="M10 11l0 6" />
-                      <path d="M14 11l0 6" />
-                      <path
-                        d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"
-                      />
-                      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                    </svg>
-                  </a>
-                </td>
-              </tr>
-
-              <tr>
-                <td>Laptop Dell XPS</td>
-                <td>Electronics</td>
-                <td>5</td>
-                <td>3</td>
-                <td class="equipment-status">
-                  <span>Available</span>
-                </td>
-                <td class="button-wrapper">
-                  <a href="#" class="edit-button">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path
-                        d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"
-                      />
-                      <path d="M13.5 6.5l4 4" />
-                    </svg>
-                  </a>
-                  <a href="#" class="delete-button">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="M4 7l16 0" />
-                      <path d="M10 11l0 6" />
-                      <path d="M14 11l0 6" />
-                      <path
-                        d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"
-                      />
-                      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                    </svg>
-                  </a>
-                </td>
-              </tr>
-
-              <tr>
-                <td>Laptop Dell XPS</td>
-                <td>Electronics</td>
-                <td>5</td>
-                <td>3</td>
-                <td class="equipment-status">
-                  <span>Available</span>
-                </td>
-                <td class="button-wrapper">
-                  <a href="#" class="edit-button">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path
-                        d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"
-                      />
-                      <path d="M13.5 6.5l4 4" />
-                    </svg>
-                  </a>
-                  <a href="#" class="delete-button">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="M4 7l16 0" />
-                      <path d="M10 11l0 6" />
-                      <path d="M14 11l0 6" />
-                      <path
-                        d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"
-                      />
-                      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                    </svg>
-                  </a>
-                </td>
-              </tr>
+              <?php endwhile; ?>
             </tbody>
           </table>
         </section>
