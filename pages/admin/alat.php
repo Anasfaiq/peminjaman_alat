@@ -1,17 +1,17 @@
 <?php
-  session_start();
-  include '../../config/conn.php';
+session_start();
+include '../../config/conn.php';
 
-  if (!isset($_SESSION['id_user'])) {
+if (!isset($_SESSION['id_user'])) {
     die("Belum Login!");
-  }
+}
 
-  $id_user = $_SESSION['id_user'];
-  $query = mysqli_query($conn, "SELECT alat.*, kategori.nama_kategori FROM alat
+$id_user = $_SESSION['id_user'];
+$query = mysqli_query($conn, "SELECT alat.*, kategori.nama_kategori FROM alat
                                               JOIN kategori ON alat.id_kategori = kategori.id_kategori");
 
-  $qUser = mysqli_query($conn, "SELECT * FROM users WHERE id_user='$id_user'");
-  $data = mysqli_fetch_assoc($qUser);
+$qUser = mysqli_query($conn, "SELECT * FROM users WHERE id_user='$id_user'");
+$data = mysqli_fetch_assoc($qUser);
 ?>
 
 <!DOCTYPE html>
@@ -23,11 +23,21 @@
     <link rel="stylesheet" href="../../src/output.css" />
   </head>
   <body class="flex gap-6 min-h-screen w-full py-8 px-14">
-    <?php 
+    <?php
       include '../components/sidebar.php'
-    ?>
+?>
 
     <main class="right-dashboard-section">
+      <?php
+    if (isset($_SESSION['success'])) {
+        echo '<div class="alert alert-success">'.$_SESSION['success'].'</div>';
+        unset($_SESSION['success']);
+    }
+if (isset($_SESSION['error'])) {
+    echo '<div class="alert alert-error">'.$_SESSION['error'].'</div>';
+    unset($_SESSION['error']);
+}
+?>
       <nav class="navbar">
         <p>Alat Management</p>
         <div class="user-dropdown-wrapper">
@@ -132,7 +142,7 @@
         <section class="search-section">
           <div class="top-equipment-section">
             <h3>Alat Management</h3>
-            <button>
+            <button id="addBtn">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -198,19 +208,19 @@
             </thead>
             <tbody>
               <?php
-                $no = 1;
-                while ($data = mysqli_fetch_assoc($query)) :
-                  $status = $data['kondisi']; // ambil dari DB
-                  if ($status == "Baik") {
-                    $statusColor = "bg-green-200 text-green-800";
-                  } elseif ($status == "Rusak Ringan") {
-                    $statusColor = "bg-yellow-200 text-yellow-800";
-                  } elseif ($status == "Rusak Berat") {
-                    $statusColor = "bg-red-200 text-red-800";
-                  } else {
-                    $statusColor = "bg-gray-200 text-gray-800";
-                  }
-              ?>
+          $no = 1;
+while ($data = mysqli_fetch_assoc($query)) :
+    $status = $data['kondisi']; // ambil dari DB
+    if ($status == "Baik") {
+        $statusColor = "bg-green-200 text-green-800";
+    } elseif ($status == "Rusak Ringan") {
+        $statusColor = "bg-yellow-200 text-yellow-800";
+    } elseif ($status == "Rusak Berat") {
+        $statusColor = "bg-red-200 text-red-800";
+    } else {
+        $statusColor = "bg-gray-200 text-gray-800";
+    }
+    ?>
               <tr>
                 <td><?= $data['nama_alat']; ?> </td>
                 <td><?= $data['nama_kategori'] ?></td>
@@ -219,7 +229,15 @@
                   <span class="<?= $statusColor ?>"><?= $data['kondisi'] ?></span>
                 </td>
                 <td class="button-wrapper">
-                  <a href="#" class="edit-button">
+                  <a
+                    href="#"
+                    class="edit-button"
+                    data-id="<?= $data['id_alat']; ?>"
+                    data-nama_alat="<?= $data['nama_alat']; ?>"
+                    data-id_kategori="<?= $data['id_kategori']; ?>"
+                    data-kondisi="<?= $data['kondisi']; ?>"
+                    data-stok="<?= $data['stok']; ?>"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -231,13 +249,13 @@
                       stroke-linecap="round"
                       stroke-linejoin="round"
                     >
-                      <path
-                        d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"
-                      />
+                      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
                       <path d="M13.5 6.5l4 4" />
                     </svg>
                   </a>
-                  <a href="#" class="delete-button">
+                  <a href="proses/proses-delete-alat.php?id=<?= $data['id_alat']; ?>" 
+                     class="delete-button" 
+                     onclick="return confirm('Yakin hapus alat ini?')">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -266,6 +284,74 @@
         </section>
       </div>
     </main>
-    <script src="./script.js"></script>
+    <!-- backdrop -->
+    <div id="modalBackdrop" class="backdrop hidden"></div>
+
+    <!-- modal -->
+    <div class="modal hidden" id="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add Alat</h3>
+        <button id="closeBtn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            >
+            <path d="M18 6l-12 12"/>
+            <path d="M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <form id="userForm" method="POST" action="proses/proses-add-alat.php">
+        <input type="hidden" id="id_alat" name="id_alat">
+
+        <div class="form">
+          <label>Nama Alat</label>
+          <input name="nama_alat" id="nama_alat" type="text" placeholder="Masukkan nama alat">
+        </div>
+
+        <div class="form">
+          <label>Kategori</label>
+          <select name="id_kategori" id="id_kategori">
+            <option value="" disabled hidden selected>Pilih kategori</option>
+            <?php
+    $kategoriQuery = mysqli_query($conn, "SELECT * FROM kategori");
+while ($kat = mysqli_fetch_assoc($kategoriQuery)) {
+    echo '<option value="'.$kat['id_kategori'].'">'.$kat['nama_kategori'].'</option>';
+}
+?>
+          </select>
+        </div>
+
+        <div class="form">
+          <label>Kondisi</label>
+          <select name="kondisi" id="kondisi">
+            <option value="" disabled hidden selected>Pilih kondisi</option>
+            <option value="Baik">Baik</option>
+            <option value="Rusak Ringan">Rusak Ringan</option>
+            <option value="Rusak Berat">Rusak Berat</option>
+          </select>
+        </div>
+
+        <div class="form">
+          <label>Stok</label>
+          <input name="stok" id="stok" type="number" placeholder="Masukkan jumlah stok" min="0">
+        </div>
+
+        <div class="button-group">
+          <button class="cancel-btn" id="closeBtn" type="button">Cancel</button>
+          <button class="simpan-btn" type="submit">Simpan</button>
+        </div>
+      </form>
+    </div>
+
+    <script src="./script.js"></script>                    
+    
   </body>
 </html>

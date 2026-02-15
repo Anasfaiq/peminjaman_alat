@@ -1,28 +1,32 @@
 <?php
-  session_start();
-  include "../../config/conn.php";
+session_start();
+include "../../config/conn.php";
+include "../../config/logging.php";
 
-  if (!isset($_SESSION['id_user'])) {
+if (!isset($_SESSION['id_user'])) {
     die("Belum Login!");
-  }
+}
 
-  $id_user = $_SESSION['id_user'];
-  $sql = mysqli_query($conn, "SELECT nama FROM users WHERE id_user='$id_user'");
-  $data = mysqli_fetch_assoc($sql);
+$id_user = $_SESSION['id_user'];
+$sql = mysqli_query($conn, "SELECT nama FROM users WHERE id_user='$id_user'");
+$data = mysqli_fetch_assoc($sql);
 
-  //logic buat ngitung total user
-  $user_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM users");
-  $total_user = mysqli_fetch_assoc($user_query)['total'];
+//logic buat ngitung total user
+$user_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM users");
+$total_user = mysqli_fetch_assoc($user_query)['total'];
 
-  // logic buat ngitung total equipment
-  $eq_query = mysqli_query($conn, "SELECT SUM(stok) as total_stok FROM alat");
-  $total_alat = mysqli_fetch_assoc($eq_query)['total_stok'];
+// logic buat ngitung total equipment
+$eq_query = mysqli_query($conn, "SELECT SUM(stok) as total_stok FROM alat");
+$total_alat = mysqli_fetch_assoc($eq_query)['total_stok'];
 
-  // logic buat ngitung active borrows
-  $br_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM peminjaman
+// logic buat ngitung active borrows
+$br_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM peminjaman
                                                  WHERE status='Disetujui' AND id_peminjaman
                                                  NOT IN (SELECT id_peminjaman FROM pengembalian)");
-  $active_borrow = mysqli_fetch_assoc($br_query)['total'];
+$active_borrow = mysqli_fetch_assoc($br_query)['total'];
+
+// ngambil recent log aktivitas
+$recent_logs = getRecentLogs($conn, 10);
 
 ?>
 
@@ -380,61 +384,25 @@
 
         <section class="recent-activity-card">
           <h3>Recent Activity</h3>
-          <div class="activity-wrapper">
-            <div class="profile">
-            </div>
-            <div class="activity">
-              <p>
-                <span class="username">John Doe</span>
-                <span class="user-activity">Borrowed</span> Laptop Dell XPS 15
-              </p>
-              <p class="activity-time">10 minutes ago</p>
-            </div>
-          </div>
-          <div class="activity-wrapper">
-            <div class="profile">
-            </div>
-            <div class="activity">
-              <p>
-                <span class="username">John Doe</span>
-                <span class="user-activity">Borrowed</span> Laptop Dell XPS 15
-              </p>
-              <p class="activity-time">10 minutes ago</p>
-            </div>
-          </div>
-          <div class="activity-wrapper">
-            <div class="profile">
-            </div>
-            <div class="activity">
-              <p>
-                <span class="username">John Doe</span>
-                <span class="user-activity">Borrowed</span> Laptop Dell XPS 15
-              </p>
-              <p class="activity-time">10 minutes ago</p>
-            </div>
-          </div>
-          <div class="activity-wrapper">
-            <div class="profile">
-            </div>
-            <div class="activity">
-              <p>
-                <span class="username">John Doe</span>
-                <span class="user-activity">Borrowed</span> Laptop Dell XPS 15
-              </p>
-              <p class="activity-time">10 minutes ago</p>
-            </div>
-          </div>
-          <div class="activity-wrapper">
-            <div class="profile">
-            </div>
-            <div class="activity">
-              <p>
-                <span class="username">John Doe</span>
-                <span class="user-activity">Borrowed</span> Laptop Dell XPS 15
-              </p>
-              <p class="activity-time">10 minutes ago</p>
-            </div>
-          </div>
+          <?php
+            if ($recent_logs) {
+                while ($log = mysqli_fetch_assoc($recent_logs)) {
+                    $waktuFormatted = formatWaktu($log['waktu']);
+                    echo '<div class="activity-wrapper">';
+                    echo '  <div class="profile"></div>';
+                    echo '  <div class="activity">';
+                    echo '    <p>';
+                    echo '      <span class="username">'.$log['nama_user'].'</span>';
+                    echo '      <span class="user-activity">'.$log['aktivitas'].'</span>';
+                    echo '    </p>';
+                    echo '    <p class="activity-time">'.$waktuFormatted.'</p>';
+                    echo '  </div>';
+                    echo '</div>';
+                }
+            } else {
+                echo '<p class="text-center py-4 text-gray-500">Tidak ada aktivitas</p>';
+            }
+?>
         </section>
       </section>
     </main>

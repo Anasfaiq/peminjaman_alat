@@ -1,3 +1,22 @@
+<?php
+session_start();
+include '../../config/conn.php';
+include '../../config/logging.php';
+
+if (!isset($_SESSION['id_user'])) {
+    die("Belum Login!");
+}
+
+$id_user = $_SESSION['id_user'];
+
+// ngambil nama user
+$nama = mysqli_query($conn, "SELECT * FROM users WHERE id_user='$id_user'");
+$data = mysqli_fetch_assoc($nama);
+
+// ngambil log aktivitas
+$query = getRecentLogs($conn, 50);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -39,7 +58,7 @@
                 d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1"
               />
             </svg>
-            <a href="#">Dashboard</a>
+            <a href="dashboard.php">Dashboard</a>
           </li>
           <li>
             <svg
@@ -58,7 +77,7 @@
               <path d="M16 3.13a4 4 0 0 1 0 7.75" />
               <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
             </svg>
-            <a href="#">User Management</a>
+            <a href="user.php">User Management</a>
           </li>
           <li>
             <svg
@@ -78,7 +97,7 @@
               <path d="M12 12l-8 -4.5" />
               <path d="M16 5.25l-8 4.5" />
             </svg>
-            <a href="#">Alat Management</a>
+            <a href="alat.php">Alat Management</a>
           </li>
           <li>
             <svg
@@ -99,7 +118,7 @@
                 d="M17 16v2a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h2"
               />
             </svg>
-            <a href="#">Kategori Management</a>
+            <a href="kategori.php">Kategori Management</a>
           </li>
           <li>
             <svg
@@ -124,7 +143,7 @@
               <path d="M9 16l.01 0" />
               <path d="M13 16l2 0" />
             </svg>
-            <a href="#">Data Peminjaman</a>
+            <a href="data_peminjaman.php">Data Peminjaman</a>
           </li>
           <li>
             <svg
@@ -140,7 +159,7 @@
             >
               <path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5" />
             </svg>
-            <a href="#">Pengembalian</a>
+            <a href="pengembalian.php">Pengembalian</a>
           </li>
           <li>
             <svg
@@ -162,7 +181,7 @@
               <path d="M9 13l6 0" />
               <path d="M9 17l6 0" />
             </svg>
-            <a href="#">Log Aktivitas</a>
+            <a href="log_aktivitas.php">Log Aktivitas</a>
           </li>
         </ul>
       </nav>
@@ -190,7 +209,7 @@
               </svg>
             </div>
             <div class="user-account">
-              <p>Admin User</p>
+              <p><?= $data['nama'] ?></p>
               <span>Administrator</span>
             </div>
             <svg
@@ -245,7 +264,7 @@
               </svg>
               Settings
             </a>
-            <a href="#" class="dropdown-item logout">
+            <a href="../../config/logout.php" class="dropdown-item logout">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -280,61 +299,33 @@
             <thead>
               <tr>
                 <td class="table-header">Waktu</td>
-                <td class="table-header">User </td>
+                <td class="table-header">User</td>
                 <td class="table-header">Aktivitas</td>
-                <td class="table-header">Type</td>
+                <td class="table-header">Tabel</td>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Laptop Dell XPS</td>
-                <td>Electronics</td>
-                <td>5</td>
-                <td class="equipment-status">
-                  <span>Available</span>
-                </td>
-              </tr>
-
-              <tr>
-                <td>Laptop Dell XPS</td>
-                <td>Electronics</td>
-                <td>5</td>
-                <td class="equipment-status">
-                  <span>Available</span>
-                </td>
-              </tr>
-
-              <tr>
-                <td>Laptop Dell XPS</td>
-                <td>Electronics</td>
-                <td>5</td>
-                <td class="equipment-status">
-                  <span>Available</span>
-                </td>
-              </tr>
-
-              <tr>
-                <td>Laptop Dell XPS</td>
-                <td>Electronics</td>
-                <td>5</td>
-                <td class="equipment-status">
-                  <span>Available</span>
-                </td>
-              </tr>
-
-              <tr>
-                <td>Laptop Dell XPS</td>
-                <td>Electronics</td>
-                <td>5</td>
-                <td class="equipment-status">
-                  <span>Available</span>
-                </td>
-              </tr>
+              <?php
+                if ($query) {
+                    while ($log = mysqli_fetch_assoc($query)) {
+                        $waktuFormatted = formatWaktu($log['waktu']);
+                        echo "<tr>";
+                        echo "<td title='" . $log['waktu'] . "'>" . $waktuFormatted . "</td>";
+                        echo "<td>" . $log['nama_user'] . "</td>";
+                        echo "<td>" . $log['aktivitas'] . "</td>";
+                        echo "<td><span class='text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded'>" . $log['tabel'] . "</span></td>";
+                        echo "</tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='4' class='text-center py-4'>Tidak ada log aktivitas</td></tr>";
+                }
+?>
             </tbody>
           </table>
         </section>
       </div>
     </main>
+
     <script src="./script.js"></script>
   </body>
 </html>

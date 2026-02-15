@@ -115,7 +115,7 @@
             <path d="M9 16l.01 0" />
             <path d="M13 16l2 0" />
         </svg>
-        <a href="data_peminjamana.php">Data Peminjaman</a>
+        <a href="data_peminjaman.php">Data Peminjaman</a>
         </li>
         <li>
         <svg

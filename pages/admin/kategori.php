@@ -1,18 +1,18 @@
 <?php
-  session_start();
-  include '../../config/conn.php';
+session_start();
+include '../../config/conn.php';
 
-  if (!isset($_SESSION['id_user'])) {
+if (!isset($_SESSION['id_user'])) {
     die("Belum Login!");
-  }
+}
 
-  $id_user = $_SESSION['id_user'];
+$id_user = $_SESSION['id_user'];
 
-  $query = mysqli_query($conn, "SELECT * FROM kategori");
+$query = mysqli_query($conn, "SELECT * FROM kategori");
 
-  // ngambil nama user
-  $user = mysqli_query($conn, "SELECT * FROM users WHERE id_user='$id_user'");
-  $data = mysqli_fetch_assoc($user);
+// ngambil nama user
+$user = mysqli_query($conn, "SELECT * FROM users WHERE id_user='$id_user'");
+$data = mysqli_fetch_assoc($user);
 ?>
 
 <!doctype html>
@@ -186,6 +186,16 @@
     </aside>
 
     <main class="right-dashboard-section">
+      <?php
+        if (isset($_SESSION['success'])) {
+            echo '<div class="alert alert-success">'.$_SESSION['success'].'</div>';
+            unset($_SESSION['success']);
+        }
+if (isset($_SESSION['error'])) {
+    echo '<div class="alert alert-error">'.$_SESSION['error'].'</div>';
+    unset($_SESSION['error']);
+}
+?>
       <nav class="navbar">
         <p>Category Management</p>
         <div class="user-dropdown-wrapper">
@@ -289,7 +299,7 @@
       <section class="main-card">
         <div class="top-equipment-section">
           <h3>Category Management</h3>
-          <button>
+          <button id="addBtn">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -319,15 +329,19 @@
             </thead>
             <tbody>
               <?php
-                $no = 1;
-                while($data = mysqli_fetch_assoc($query)) : 
-              ?>
+          $no = 1;
+while ($data = mysqli_fetch_assoc($query)) :
+    ?>
               <tr>
                 <td><?= $no++ ?> </td>
                 <td><?= $data['nama_kategori']; ?></td>
                 <td><?= $data['keterangan']; ?></td>
                 <td class="button-wrapper">
-                  <a href="#" class="edit-button">
+                  <a href="#" 
+                     data-id="<?= $data['id_kategori']; ?>"
+                     data-nama_kategori="<?= $data['nama_kategori']; ?>"
+                     data-keterangan="<?= $data['keterangan']; ?>"
+                     class="edit-button">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -345,7 +359,9 @@
                       <path d="M13.5 6.5l4 4" />
                     </svg>
                   </a>
-                  <a href="#" class="delete-button">
+                  <a href="proses/proses-delete-kategori.php?id=<?= $data['id_kategori']; ?>" 
+                     class="delete-button" 
+                     onclick="return confirm('Yakin hapus kategori ini?')">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -374,6 +390,38 @@
         </section>
       </section>
     </main>
+
+    <!-- backdrop -->
+    <div id="modalBackdrop" class="backdrop hidden"></div>
+
+    <!-- modal -->
+    <div class="modal hidden" id="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add Category</h3>
+        <button id="closeBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6l-12 12"/>
+            <path d="M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <form id="userForm" method="POST" action="proses/proses-add-kategori.php">
+        <input type="hidden" id="id_kategori" name="id_kategori">
+        <div class="form">
+          <label>Nama Kategori</label>
+          <input name="nama_kategori" id="nama_kategori" type="text" placeholder="Masukkan nama kategori">
+        </div>
+        <div class="form">
+          <label>Keterangan</label>
+          <textarea name="keterangan" id="keterangan" placeholder="Masukkan keterangan"></textarea>
+        </div>
+        <div class="button-group">
+          <button class="cancel-btn" id="closeBtn" type="button">Cancel</button>
+          <button class="simpan-btn" type="submit">Simpan</button>
+        </div>
+      </form>
+    </div>
+
     <script src="./script.js"></script>
   </body>
 </html>

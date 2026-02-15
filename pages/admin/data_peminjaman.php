@@ -1,22 +1,24 @@
 <?php
-  session_start();
-  include '../../config/conn.php';
+session_start();
+include '../../config/conn.php';
 
-  if (!isset($_SESSION['id_user'])) {
+if (!isset($_SESSION['id_user'])) {
     die("Belum Login!");
-  }
+}
 
-  $id_user = $_SESSION['id_user'];
+$id_user = $_SESSION['id_user'];
 
- $query = mysqli_query($conn, 
- "SELECT peminjaman.*, users.nama AS nama_peminjam, alat.nama_alat, detail_peminjaman.jumlah FROM peminjaman
+$query = mysqli_query(
+    $conn,
+    "SELECT peminjaman.*, users.nama AS nama_peminjam, alat.nama_alat, detail_peminjaman.jumlah FROM peminjaman
          JOIN users ON peminjaman.id_user = users.id_user
          JOIN detail_peminjaman ON peminjaman.id_peminjaman = detail_peminjaman.id_peminjaman
          JOIN alat ON detail_peminjaman.id_alat = alat.id_alat
-         ");
+         "
+);
 
-  $nama = mysqli_query($conn, "SELECT * FROM users WHERE id_user='$id_user'");
-  $data = mysqli_fetch_assoc($nama);
+$nama = mysqli_query($conn, "SELECT * FROM users WHERE id_user='$id_user'");
+$data = mysqli_fetch_assoc($nama);
 ?>  
 
 <!DOCTYPE html>
@@ -190,6 +192,16 @@
     </aside>
 
     <main class="right-dashboard-section">
+      <?php
+        if (isset($_SESSION['success'])) {
+            echo '<div class="alert alert-success">'.$_SESSION['success'].'</div>';
+            unset($_SESSION['success']);
+        }
+        if (isset($_SESSION['error'])) {
+            echo '<div class="alert alert-error">'.$_SESSION['error'].'</div>';
+            unset($_SESSION['error']);
+        }
+        ?>
       <nav class="navbar">
         <p>Data Peminjaman</p>
         <div class="user-dropdown-wrapper">
@@ -294,7 +306,7 @@
         <section class="search-section">
           <div class="top-equipment-section">
             <h3>Data Peminjaman</h3>
-            <button>
+            <button id="addBtn">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -327,19 +339,19 @@
             </thead>
             <tbody>
               <?php
-                $no = 1;
-                while ($data = mysqli_fetch_assoc ($query)) :
-                  $status = $data['status'];
-                  if ($status == "Menunggu") {
-                    $statusColor = "bg-yellow-200 text-yellow-800";
-                  } else if ($status == "Disetujui") {
-                    $statusColor = "bg-green-200 text-green-800";
-                  } else if ($status == "Ditolak") {
-                    $statusColor = "bg-red-200 text-red-800";
-                  } else {
-                    $statusColor = "bg-gray-200 text-gray-200";
-                  }
-              ?>
+          $no = 1;
+while ($data = mysqli_fetch_assoc($query)) :
+    $status = $data['status'];
+    if ($status == "Menunggu") {
+        $statusColor = "bg-yellow-200 text-yellow-800";
+    } elseif ($status == "Disetujui") {
+        $statusColor = "bg-green-200 text-green-800";
+    } elseif ($status == "Ditolak") {
+        $statusColor = "bg-red-200 text-red-800";
+    } else {
+        $statusColor = "bg-gray-200 text-gray-200";
+    }
+    ?>
               <tr>
                 <td><?= $data['nama_peminjam'] ?></td>
                 <td><?= $data['nama_alat'] ?></td>
@@ -349,7 +361,13 @@
                   <span class="<?= $statusColor ?>"><?= $data['status'] ?></span>
                 </td>
                 <td class="button-wrapper">
-                  <a href="#" class="edit-button">
+                  <a href="#" 
+                     data-id="<?= $data['id_peminjaman']; ?>"
+                     data-id_user="<?= $data['id_user']; ?>"
+                     data-tanggal_pinjam="<?= $data['tanggal_pinjam']; ?>"
+                     data-tanggal_kembali_rencana="<?= $data['tanggal_kembali_rencana']; ?>"
+                     data-status="<?= $data['status']; ?>"
+                     class="edit-button">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -367,7 +385,9 @@
                       <path d="M13.5 6.5l4 4" />
                     </svg>
                   </a>
-                  <a href="#" class="delete-button">
+                  <a href="proses/proses-delete-peminjaman.php?id=<?= $data['id_peminjaman']; ?>" 
+                     class="delete-button" 
+                     onclick="return confirm('Yakin hapus peminjaman ini?')">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -394,6 +414,75 @@
             </tbody>
           </table>
         </section>
+
+    <!-- backdrop -->
+    <div id="modalBackdrop" class="backdrop hidden"></div>
+
+    <!-- modal -->
+    <div class="modal hidden" id="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add Peminjaman</h3>
+        <button id="closeBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6l-12 12"/>
+            <path d="M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <form id="userForm" method="POST" action="proses/proses-add-peminjaman.php">
+        <input type="hidden" id="id_peminjaman" name="id_peminjaman">
+        <div class="form">
+          <label>Peminjam</label>
+          <select name="id_user" id="id_user_select">
+            <option value="" disabled hidden selected>Pilih peminjam</option>
+            <?php
+              $userQuery = mysqli_query($conn, "SELECT * FROM users WHERE role='peminjam'");
+              while ($usr = mysqli_fetch_assoc($userQuery)) {
+                echo '<option value="'.$usr['id_user'].'">'.$usr['nama'].'</option>';
+              }
+            ?>
+          </select>
+        </div>
+        <div class="form">
+          <label>Alat</label>
+          <select name="id_alat" id="id_alat_select">
+            <option value="" disabled hidden selected>Pilih alat</option>
+              <?php
+                $alatQuery = mysqli_query($conn, "SELECT * FROM alat");
+                while ($alt = mysqli_fetch_assoc($alatQuery)) {
+                  echo '<option value="'.$alt['id_alat'].'">'.$alt['nama_alat'].'</option>';
+                }
+              ?>
+          </select>
+        </div>
+        <div class="form">
+          <label>Jumlah</label>
+          <input name="jumlah" id="jumlah" type="number" placeholder="Masukkan jumlah" min="1">
+        </div>
+        <div class="form">
+          <label>Tanggal Pinjam</label>
+          <input name="tanggal_pinjam" id="tanggal_pinjam" type="date">
+        </div>
+        <div class="form">
+          <label>Tanggal Kembali Rencana</label>
+          <input name="tanggal_kembali_rencana" id="tanggal_kembali_rencana" type="date">
+        </div>
+        <div class="form">
+          <label>Status</label>
+          <select name="status" id="status">
+            <option value="" disabled hidden selected>Pilih status</option>
+            <option value="Menunggu">Menunggu</option>
+            <option value="Disetujui">Disetujui</option>
+            <option value="Ditolak">Ditolak</option>
+          </select>
+        </div>
+        <div class="button-group">
+          <button class="cancel-btn" id="closeBtn" type="button">Cancel</button>
+          <button class="simpan-btn" type="submit">Simpan</button>
+        </div>
+      </form>
+    </div>
+
       </div>
     </main>
     <script src="./script.js"></script>

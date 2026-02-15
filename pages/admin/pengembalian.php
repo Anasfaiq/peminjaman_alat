@@ -1,23 +1,25 @@
 <?php
-  session_start();
-  include '../../config/conn.php';
+session_start();
+include '../../config/conn.php';
 
-  if(!isset($_SESSION['id_user'])) {
+if (!isset($_SESSION['id_user'])) {
     die("Belum Login!");
-  }
+}
 
-  $id_user = $_SESSION['id_user'];
+$id_user = $_SESSION['id_user'];
 
-  $query = mysqli_query($conn, 
+$query = mysqli_query(
+    $conn,
     "SELECT pengembalian.*, users.nama as nama_peminjam, alat.nama_alat, peminjaman.tanggal_pinjam, peminjaman.tanggal_kembali_rencana, detail_peminjaman.jumlah AS jumlah FROM pengembalian
             JOIN peminjaman ON pengembalian.id_peminjaman = peminjaman.id_peminjaman
             JOIN users ON peminjaman.id_user = users.id_user
             JOIN detail_peminjaman ON peminjaman.id_peminjaman = detail_peminjaman.id_peminjaman
-            JOIN alat ON detail_peminjaman.id_alat = alat.id_alat");
+            JOIN alat ON detail_peminjaman.id_alat = alat.id_alat"
+);
 
-  // ngambil nama user
-  $nama = mysqli_query($conn, "SELECT * FROM users WHERE id_user='$id_user'");
-  $data = mysqli_fetch_assoc($nama);
+// ngambil nama user
+$nama = mysqli_query($conn, "SELECT * FROM users WHERE id_user='$id_user'");
+$data = mysqli_fetch_assoc($nama);
 ?>
 
 <!DOCTYPE html>
@@ -292,10 +294,20 @@
       </nav>
 
       <div class="main-card">
+        <?php
+          if (isset($_SESSION['success'])) {
+              echo '<div class="alert alert-success">'.$_SESSION['success'].'</div>';
+              unset($_SESSION['success']);
+          }
+if (isset($_SESSION['error'])) {
+    echo '<div class="alert alert-error">'.$_SESSION['error'].'</div>';
+    unset($_SESSION['error']);
+}
+?>
         <section class="search-section">
           <div class="top-equipment-section">
             <h3>Data Pengembalian</h3>
-            <button>
+            <button id="addBtn">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -321,24 +333,25 @@
                 <td class="table-header">Borrower Name</td>
                 <td class="table-header">Alat </td>
                 <td class="table-header">Tanggal Pinjam</td>
+                <td class="table-header">Tanggal Kembali Rencana</td>
                 <td class="table-header">Tanggal Kembali</td>
-                <td class="table-header">Return Date</td>
-                <td class="table-header">Status</td>
+                <td class="table-header">Kondisi</td>
+                <td class="table-header">Action</td>
               </tr>
             </thead>
             <tbody>
               <?php
-                $no = 1;
-                while ($data = mysqli_fetch_assoc($query)) :
-                  $kondisi_kembali = $data['kondisi_kembali'];
-                  if ($kondisi_kembali == "Baik") {
-                    $statusColor = "bg-green-200 text-green-800";
-                  } else if ($kondisi_kembali == "Rusak") {
-                    $statusColor = "bg-red-200 text-red-800";
-                  } else {
-                    $statusColor = "bg-gray-200 text-gray-200";
-                  }
-              ?>
+        $no = 1;
+while ($data = mysqli_fetch_assoc($query)) :
+    $kondisi_kembali = $data['kondisi_kembali'];
+    if ($kondisi_kembali == "Baik") {
+        $statusColor = "bg-green-200 text-green-800";
+    } elseif ($kondisi_kembali == "Rusak") {
+        $statusColor = "bg-red-200 text-red-800";
+    } else {
+        $statusColor = "bg-gray-200 text-gray-200";
+    }
+    ?>
               <tr>
                 <td><?= $data['nama_peminjam'] ?></td>
                 <td><?= $data['nama_alat'] ?></td>
@@ -346,7 +359,32 @@
                 <td><?= $data['tanggal_kembali_rencana'] ?></td>
                 <td><?= $data['tanggal_kembali'] ?></td>
                 <td class="equipment-status">
-                  <span class=" <?= $statusColor ?> "><?= $data['kondisi_kembali'] ?></span>
+                  <span class="<?= $statusColor ?>"><?= $data['kondisi_kembali'] ?></span>
+                </td>
+                <td class="button-wrapper">
+                  <a href="#" 
+                     data-id="<?= $data['id_pengembalian']; ?>"
+                     data-id_peminjaman="<?= $data['id_peminjaman']; ?>"
+                     data-tanggal_kembali="<?= $data['tanggal_kembali']; ?>"
+                     data-kondisi_kembali="<?= $data['kondisi_kembali']; ?>"
+                     data-denda="<?= $data['denda']; ?>"
+                     class="edit-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"/>
+                      <path d="M13.5 6.5l4 4" />
+                    </svg>
+                  </a>
+                  <a href="proses/proses-delete-pengembalian.php?id=<?= $data['id_pengembalian']; ?>" 
+                     class="delete-button" 
+                     onclick="return confirm('Yakin hapus pengembalian ini?')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 7l16 0" />
+                      <path d="M10 11l0 6" />
+                      <path d="M14 11l0 6" />
+                      <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/>
+                      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                    </svg>
+                  </a>
                 </td>
               </tr>
               <?php endwhile; ?>
@@ -355,6 +393,58 @@
         </section>
       </div>
     </main>
+
+    <!-- backdrop -->
+    <div id="modalBackdrop" class="backdrop hidden"></div>
+
+    <!-- modal -->
+    <div class="modal hidden" id="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add Pengembalian</h3>
+        <button id="closeBtnX" type="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6l-12 12"/>
+            <path d="M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <form id="userForm" method="POST" action="proses/proses-add-pengembalian.php">
+        <input type="hidden" id="id_pengembalian" name="id_pengembalian">
+        <div class="form">
+          <label>Peminjaman</label>
+          <select name="id_peminjaman" id="id_peminjaman_select">
+            <option value="" disabled hidden selected>Pilih peminjaman</option>
+            <?php
+    $peminjamanQuery = mysqli_query($conn, "SELECT p.id_peminjaman, u.nama, a.nama_alat FROM peminjaman p JOIN users u ON p.id_user = u.id_user JOIN detail_peminjaman dp ON p.id_peminjaman = dp.id_peminjaman JOIN alat a ON dp.id_alat = a.id_alat GROUP BY p.id_peminjaman");
+while ($pmj = mysqli_fetch_assoc($peminjamanQuery)) {
+    echo '<option value="'.$pmj['id_peminjaman'].'">'.$pmj['nama'].' - '.$pmj['nama_alat'].'</option>';
+}
+?>
+          </select>
+        </div>
+        <div class="form">
+          <label>Tanggal Kembali</label>
+          <input name="tanggal_kembali" id="tanggal_kembali" type="date">
+        </div>
+        <div class="form">
+          <label>Kondisi Saat Kembali</label>
+          <select name="kondisi_kembali" id="kondisi_kembali">
+            <option value="" disabled hidden selected>Pilih kondisi</option>
+            <option value="Baik">Baik</option>
+            <option value="Rusak">Rusak</option>
+          </select>
+        </div>
+        <div class="form">
+          <label>Denda</label>
+          <input name="denda" id="denda" type="number" placeholder="Masukkan nominal denda" min="0">
+        </div>
+        <div class="button-group">
+          <button class="cancel-btn" id="closeBtn" type="button">Cancel</button>
+          <button class="simpan-btn" type="submit">Simpan</button>
+        </div>
+      </form>
+    </div>
+
     <script src="./script.js"></script>
   </body>
 </html>
