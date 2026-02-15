@@ -1,6 +1,7 @@
 <?php
   session_start();
   include '../../../config/conn.php';
+  include '../../../config/logging.php';
 
   // cek apakah form disubmit
   if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -59,6 +60,8 @@
   );
 
   if (mysqli_stmt_execute($query)) {
+    $id_user = mysqli_insert_id($conn);
+    logAktivitas($conn, $_SESSION['id_user'], "Menambah user baru: $nama ($role)", "users", $id_user);
     $_SESSION['success'] = "User berhasil ditambahkan!";
   } else {
     $_SESSION['error'] = "Gagal menambahkan user!";
