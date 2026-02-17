@@ -1,3 +1,7 @@
+<?php
+// Deteksi halaman aktif
+$current_page = basename($_SERVER['PHP_SELF']);
+?>
 <aside class="left-dashboard-section">
     <nav class="sidebar">
     <div>
@@ -5,7 +9,7 @@
         <p>Admin Panel</p>
     </div>
     <ul>
-        <li>
+        <li <?php echo ($current_page === 'dashboard.php') ? 'class="active"' : ''; ?>>
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -32,7 +36,7 @@
         </svg>
         <a href="dashboard.php">Dashboard</a>
         </li>
-        <li>
+        <li <?php echo ($current_page === 'user.php') ? 'class="active"' : ''; ?>>
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -51,7 +55,7 @@
         </svg>
         <a href="../admin/user.php">User Management</a>
         </li>
-        <li>
+        <li <?php echo ($current_page === 'alat.php') ? 'class="active"' : ''; ?>>
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -71,7 +75,7 @@
         </svg>
         <a href="alat.php">Alat Management</a>
         </li>
-        <li>
+        <li <?php echo ($current_page === 'kategori.php') ? 'class="active"' : ''; ?>>
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -92,7 +96,7 @@
         </svg>
         <a href="kategori.php">Kategori Management</a>
         </li>
-        <li>
+        <li <?php echo ($current_page === 'data_peminjaman.php') ? 'class="active"' : ''; ?>>
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -117,7 +121,7 @@
         </svg>
         <a href="data_peminjaman.php">Data Peminjaman</a>
         </li>
-        <li>
+        <li <?php echo ($current_page === 'pengembalian.php') ? 'class="active"' : ''; ?>>
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -133,7 +137,7 @@
         </svg>
         <a href="pengembalian.php">Pengembalian</a>
         </li>
-        <li>
+        <li <?php echo ($current_page === 'log_aktivitas.php') ? 'class="active"' : ''; ?>>
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
