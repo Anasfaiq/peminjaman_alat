@@ -121,7 +121,7 @@ $pending_list_query = mysqli_query($conn, "SELECT p.id_peminjaman, u.nama, p.tan
 
       <div class="dashboard-content">
         <!-- Statistics Cards -->
-        <div class="dashboard-cards">
+        <div class="dashboard-cards-petugas">
           <div class="dashboard-card">
             <div class="card-text">
               <h3>Peminjaman Menunggu</h3>
@@ -161,19 +161,6 @@ $pending_list_query = mysqli_query($conn, "SELECT p.id_peminjaman, u.nama, p.tan
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path><path d="M10 10l4 4m0 -4l-4 4"></path></svg>
             </div>
           </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="bg-white rounded-lg p-6 shadow-sm flex gap-4 flex-wrap">
-          <a href="persetujuan_peminjaman.php" class="quick-link">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg> Persetujuan Peminjaman
-          </a>
-          <a href="monitoring_pengembalian.php" class="quick-link-purple">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18a9 8 0 0 0 9 -8c0 -4.3 -2 -8 -5 -10"></path><path d="M12 9v6l4 2"></path></svg> Monitoring Pengembalian
-          </a>
-          <a href="laporan.php" class="quick-link-cyan">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2V7a2 2 0 0 0 -2 -2h -2"></path><rect x="9" y="3" width="6" height="4" rx="2"></rect><path d="M9 12h6"></path><path d="M9 16h6"></path></svg> Laporan
-          </a>
         </div>
 
         <!-- Recent Pending Requests -->
@@ -217,5 +204,5 @@ $pending_list_query = mysqli_query($conn, "SELECT p.id_peminjaman, u.nama, p.tan
     </main>
   </body>
 
-  <script src="../../script.js"></script>
+  <script src="script.js"></script>
 </html>
