@@ -148,8 +148,8 @@ $peminjaman_list = $result->fetch_all(MYSQLI_ASSOC);
                     <td><?= htmlspecialchars($item['nama']) ?></td>
                     <td><?= date('d/m/Y', strtotime($item['tanggal_pinjam'])) ?></td>
                     <td><?= date('d/m/Y', strtotime($item['tanggal_kembali_rencana'])) ?></td>
-                    <td><?= $item['jumlah_alat'] ?></td>
-                    <td>
+                    <td class="text-center"><?= $item['jumlah_alat'] ?></td>
+                    <td class="text-center">
                       <span class="<?php
                         if($item['status'] === 'Menunggu') {
                             echo 'status-pending';
@@ -162,7 +162,7 @@ $peminjaman_list = $result->fetch_all(MYSQLI_ASSOC);
                         <?= $item['status'] ?>
                       </span>
                     </td>
-                    <td>
+                    <td class="text-center">
                       <button onclick="openDetailModal(<?= $item['id_peminjaman'] ?>, '<?= htmlspecialchars($item['nama']) ?>')" 
                               class="detail-link">
                         Lihat Detail
@@ -189,7 +189,22 @@ $peminjaman_list = $result->fetch_all(MYSQLI_ASSOC);
   <div id="detailModalContent" class="modal hidden w-96">
     <div class="modal-header">
       <h3>Detail Peminjaman</h3>
-      <button onclick="closeDetailModal()" class="text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg p-2 transition-colors">×</button>
+      <button onclick="closeDetailModal()" class="text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg p-2 transition-colors">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 6l-12 12" />
+          <path d="M6 6l12 12" />
+        </svg>
+      </button>
     </div>
     <form id="detailForm">
       <div class="modal-content-form">
@@ -205,11 +220,11 @@ $peminjaman_list = $result->fetch_all(MYSQLI_ASSOC);
 
         <div class="modal-actions">
           <button type="button" onclick="updateStatusPeminjaman(currentPeminjamanId, 'Disetujui')" 
-                  class="simpan-btn bg-green-600 hover:bg-green-700 border-green-600 flex items-center justify-center gap-2">
+                  class="simpan-btn-petugas">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg> Setujui
           </button>
           <button type="button" onclick="updateStatusPeminjaman(currentPeminjamanId, 'Ditolak')" 
-                  class="cancel-btn bg-red-100 text-red-700 border-red-300 hover:bg-red-200 flex items-center justify-center gap-2">
+                  class="cancel-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path><path d="M10 10l4 4m0 -4l-4 4"></path></svg> Tolak
           </button>
         </div>
@@ -217,63 +232,5 @@ $peminjaman_list = $result->fetch_all(MYSQLI_ASSOC);
     </form>
   </div>
 
-  <script>
-    let currentPeminjamanId = null;
-
-    function openDetailModal(id, nama) {
-      currentPeminjamanId = id;
-      document.getElementById('peminjamName').textContent = nama;
-      
-      // Fetch detail alat
-      fetch('proses/proses-get-detail-peminjaman.php?id=' + id)
-        .then(response => response.json())
-        .then(data => {
-          let html = '';
-          if(data.length > 0) {
-            data.forEach(item => {
-              html += `<div class="modal-field-item">
-                <strong>${item.nama_alat}</strong> - Jumlah: ${item.jumlah}
-              </div>`;
-            });
-          } else {
-            html = '<p class="text-gray-500">Tidak ada detail alat</p>';
-          }
-          document.getElementById('detailAlatList').innerHTML = html;
-        });
-      
-      document.getElementById('detailModal').classList.remove('hidden');
-      document.getElementById('detailModalContent').classList.remove('hidden');
-    }
-
-    function closeDetailModal() {
-      document.getElementById('detailModal').classList.add('hidden');
-      document.getElementById('detailModalContent').classList.add('hidden');
-    }
-
-    function updateStatusPeminjaman(id, status) {
-      if(!confirm(`Yakin ingin ${status === 'Disetujui' ? 'menyetujui' : 'menolak'} peminjaman ini?`)) return;
-      
-      fetch('proses/proses-update-status-peminjaman.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'id_peminjaman=' + id + '&status=' + status
-      })
-      .then(response => response.json())
-      .then(data => {
-        if(data.success) {
-          alert(data.message);
-          location.reload();
-        } else {
-          alert('Gagal: ' + data.message);
-        }
-      });
-    }
-
-    // Close modal klik outside
-    document.getElementById('detailModal').addEventListener('click', closeDetailModal);
-  </script>
-
-  <script src="../../script.js"></script>
+  <script src="script.js"></script>
 </html>
