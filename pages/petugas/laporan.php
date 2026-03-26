@@ -53,12 +53,141 @@ $laporan_data = $stmt->get_result()->fetch_assoc();
     <link rel="stylesheet" href="../../src/output.css" />
     <style>
       @media print {
-        body {
-          background: white;
+        * {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
-        .navbar, #userBtn, .user-dropdown-wrapper, button[onclick*="print"] {
+
+        body {
+          background: white !important;
+          font-family: 'Times New Roman', serif;
+          padding: 0;
+          margin: 0;
+        }
+
+        /* Sembunyiin semua elemen */
+        body > * {
           display: none !important;
         }
+
+        main.right-dashboard-section {
+          display: block !important;
+          width: 100% !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+
+        main.right-dashboard-section > * {
+          display: none !important;
+        }
+
+        main.right-dashboard-section .main-card {
+          display: block !important;
+          border: none !important;
+          box-shadow: none !important;
+          padding: 0 !important;
+        }
+
+        .main-card > * {
+          display: none !important;
+        }
+
+        /* Tampilin khusus versi print */
+        #print-version {
+          display: block !important;
+          padding: 40px;
+          color: black;
+        }
+
+        /* Sembunyiin versi web */
+        .report-header,
+        .report-filter-section {
+          display: none !important;
+        }
+
+        /* Style dokumen print */
+        #print-version .print-instansi {
+          text-align: center;
+          font-size: 13px;
+          margin-bottom: 4px;
+        }
+
+        #print-version .print-judul {
+          text-align: center;
+          font-size: 18px;
+          font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          margin-bottom: 2px;
+        }
+
+        #print-version .print-periode {
+          text-align: center;
+          font-size: 13px;
+          margin-bottom: 16px;
+        }
+
+        #print-version .print-divider {
+          border: none;
+          border-top: 2px solid black;
+          margin-bottom: 4px;
+        }
+
+        #print-version .print-divider-thin {
+          border: none;
+          border-top: 1px solid black;
+          margin-bottom: 20px;
+        }
+
+        #print-version table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 32px;
+          font-size: 13px;
+        }
+
+        #print-version table th {
+          background: #f0f0f0;
+          border: 1px solid #333;
+          padding: 8px 12px;
+          text-align: left;
+        }
+
+        #print-version table td {
+          border: 1px solid #333;
+          padding: 8px 12px;
+        }
+
+        #print-version table td:last-child {
+          text-align: center;
+          font-weight: bold;
+        }
+
+        #print-version .print-footer {
+          margin-top: 48px;
+          display: flex;
+          justify-content: space-between;
+          font-size: 12px;
+        }
+
+        #print-version .ttd-block {
+          text-align: center;
+        }
+
+        #print-version .ttd-block .ttd-space {
+          height: 64px;
+        }
+
+        #print-version .ttd-block .ttd-line {
+          border-top: 1px solid black;
+          width: 160px;
+          margin: 0 auto;
+        }
+      }
+
+      /* Di layar, sembunyiin versi print */
+      #print-version {
+        display: none;
       }
     </style>
   </head>
@@ -253,7 +382,69 @@ $laporan_data = $stmt->get_result()->fetch_assoc();
       const tahun = document.getElementById('tahun').value;
       window.location.href = `?bulan=${bulan}&tahun=${tahun}`;
     }
+
+    // Inject versi print ke dalam .main-card
+    (function() {
+      const bulanText  = "<?= date('F', mktime(0, 0, 0, $bulan, 1)) ?>";
+      const tahun      = "<?= $tahun ?>";
+      const nama       = "<?= htmlspecialchars($user_data['nama']) ?>";
+      const waktuCetak = "<?= date('d/m/Y H:i:s') ?>";
+
+      const stats = [
+        ["Total Peminjaman",   "<?= $laporan_data['total_peminjaman'] ?: 0 ?>"],
+        ["Disetujui",          "<?= $laporan_data['disetujui'] ?: 0 ?>"],
+        ["Ditolak",            "<?= $laporan_data['ditolak'] ?: 0 ?>"],
+        ["Total Pengembalian", "<?= $laporan_data['total_pengembalian'] ?: 0 ?>"],
+        ["Terlambat",          "<?= $laporan_data['terlambat'] ?: 0 ?>"],
+        ["Rusak",              "<?= $laporan_data['rusak'] ?: 0 ?>"],
+        ["Total Denda",        "Rp<?= number_format($laporan_data['total_denda'] ?: 0, 0, ',', '.') ?>"],
+      ];
+
+      const rows = stats.map(([label, val]) => `
+        <tr>
+          <td>${label}</td>
+          <td>${val}</td>
+        </tr>
+      `).join('');
+
+      const html = `
+        <div id="print-version">
+          <p class="print-instansi">SISTEM PEMINJAMAN ALAT</p>
+          <p class="print-judul">Laporan Peminjaman Alat</p>
+          <p class="print-periode">Periode: ${bulanText} ${tahun}</p>
+          <hr class="print-divider"/>
+          <hr class="print-divider-thin"/>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Keterangan</th>
+                <th>Jumlah</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+
+          <div class="print-footer">
+            <div>
+              <p>Dicetak pada: ${waktuCetak}</p>
+              <p>Oleh: ${nama}</p>
+            </div>
+            <div class="ttd-block">
+              <p>Petugas,</p>
+              <div class="ttd-space"></div>
+              <div class="ttd-line"></div>
+              <p>${nama}</p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.querySelector('.main-card').insertAdjacentHTML('beforeend', html);
+    })();
   </script>
 
-  <script src="../../script.js"></script>
+  <script src="script.js"></script>
 </html>
