@@ -114,7 +114,7 @@ if (isset($_SESSION['error'])) {
               </svg>
               Settings
             </a>
-            <a href="#" class="dropdown-item logout">
+            <a href="../../config/logout.php" class="dropdown-item logout">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -233,8 +233,8 @@ while ($data = mysqli_fetch_assoc($query)) :
                     href="#"
                     class="edit-button"
                     data-id="<?= $data['id_alat']; ?>"
-                    data-nama_alat="<?= $data['nama_alat']; ?>"
-                    data-id_kategori="<?= $data['id_kategori']; ?>"
+                    data-nama-alat="<?= $data['nama_alat']; ?>"
+                    data-id-kategori="<?= $data['id_kategori']; ?>"
                     data-kondisi="<?= $data['kondisi']; ?>"
                     data-stok="<?= $data['stok']; ?>"
                   >

@@ -10,7 +10,7 @@ $id_user = $_SESSION['id_user'];
 
 $query = mysqli_query(
     $conn,
-    "SELECT peminjaman.*, users.nama AS nama_peminjam, alat.nama_alat, detail_peminjaman.jumlah FROM peminjaman
+    "SELECT peminjaman.*, users.nama AS nama_peminjam, alat.nama_alat, alat.id_alat, detail_peminjaman.jumlah, detail_peminjaman.id_alat AS detail_id_alat FROM peminjaman
          JOIN users ON peminjaman.id_user = users.id_user
          JOIN detail_peminjaman ON peminjaman.id_peminjaman = detail_peminjaman.id_peminjaman
          JOIN alat ON detail_peminjaman.id_alat = alat.id_alat
@@ -121,7 +121,7 @@ if (isset($_SESSION['error'])) {
               </svg>
               Settings
             </a>
-            <a href="#" class="dropdown-item logout">
+            <a href="../../config/logout.php" class="dropdown-item logout">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -206,9 +206,11 @@ while ($data = mysqli_fetch_assoc($query)) :
                 <td class="button-wrapper">
                   <a href="#" 
                      data-id="<?= $data['id_peminjaman']; ?>"
-                     data-id_user="<?= $data['id_user']; ?>"
-                     data-tanggal_pinjam="<?= $data['tanggal_pinjam']; ?>"
-                     data-tanggal_kembali_rencana="<?= $data['tanggal_kembali_rencana']; ?>"
+                     data-id-user="<?= $data['id_user']; ?>"
+                     data-id-alat="<?= $data['id_alat']; ?>"
+                     data-jumlah="<?= $data['jumlah']; ?>"
+                     data-tanggal-pinjam="<?= $data['tanggal_pinjam']; ?>"
+                     data-tanggal-kembali-rencana="<?= $data['tanggal_kembali_rencana']; ?>"
                      data-status="<?= $data['status']; ?>"
                      class="edit-button">
                     <svg

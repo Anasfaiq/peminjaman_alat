@@ -33,7 +33,7 @@ $data = mysqli_fetch_assoc($nama);
   <body class="flex gap-6 min-h-screen w-full py-8 px-14">
     <?php
       include '../components/sidebar.php'
-?>
+    ?>
 
     <main class="right-dashboard-section">
       <nav class="navbar">
@@ -112,7 +112,7 @@ $data = mysqli_fetch_assoc($nama);
               </svg>
               Settings
             </a>
-            <a href="#" class="dropdown-item logout">
+            <a href="../../config/logout.php" class="dropdown-item logout">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -138,15 +138,15 @@ $data = mysqli_fetch_assoc($nama);
 
       <div class="main-card">
         <?php
-      if (isset($_SESSION['success'])) {
-          echo '<div class="alert alert-success">'.$_SESSION['success'].'</div>';
-          unset($_SESSION['success']);
-      }
-if (isset($_SESSION['error'])) {
-    echo '<div class="alert alert-error">'.$_SESSION['error'].'</div>';
-    unset($_SESSION['error']);
-}
-?>
+        if (isset($_SESSION['success'])) {
+            echo '<div class="alert alert-success">'.$_SESSION['success'].'</div>';
+            unset($_SESSION['success']);
+        }
+        if (isset($_SESSION['error'])) {
+            echo '<div class="alert alert-error">'.$_SESSION['error'].'</div>';
+            unset($_SESSION['error']);
+        }
+        ?>
         <section class="search-section">
           <div class="top-equipment-section">
             <h3>Data Pengembalian</h3>
@@ -184,17 +184,17 @@ if (isset($_SESSION['error'])) {
             </thead>
             <tbody>
               <?php
-        $no = 1;
-while ($data = mysqli_fetch_assoc($query)) :
-    $kondisi_kembali = $data['kondisi_kembali'];
-    if ($kondisi_kembali == "Baik") {
-        $statusColor = "bg-green-200 text-green-800";
-    } elseif ($kondisi_kembali == "Rusak") {
-        $statusColor = "bg-red-200 text-red-800";
-    } else {
-        $statusColor = "bg-gray-200 text-gray-200";
-    }
-    ?>
+              $no = 1;
+              while ($data = mysqli_fetch_assoc($query)) :
+                  $kondisi_kembali = $data['kondisi_kembali'];
+                  if ($kondisi_kembali == "Baik") {
+                      $statusColor = "bg-green-200 text-green-800";
+                  } elseif ($kondisi_kembali == "Rusak") {
+                      $statusColor = "bg-red-200 text-red-800";
+                  } else {
+                      $statusColor = "bg-gray-200 text-gray-200";
+                  }
+              ?>
               <tr>
                 <td><?= $data['nama_peminjam'] ?></td>
                 <td><?= $data['nama_alat'] ?></td>
@@ -207,9 +207,9 @@ while ($data = mysqli_fetch_assoc($query)) :
                 <td class="button-wrapper">
                   <a href="#" 
                      data-id="<?= $data['id_pengembalian']; ?>"
-                     data-id_peminjaman="<?= $data['id_peminjaman']; ?>"
-                     data-tanggal_kembali="<?= $data['tanggal_kembali']; ?>"
-                     data-kondisi_kembali="<?= $data['kondisi_kembali']; ?>"
+                     data-id-peminjaman="<?= $data['id_peminjaman']; ?>"
+                     data-tanggal-kembali="<?= $data['tanggal_kembali']; ?>"
+                     data-kondisi-kembali="<?= $data['kondisi_kembali']; ?>"
                      data-denda="<?= $data['denda']; ?>"
                      class="edit-button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -236,7 +236,6 @@ while ($data = mysqli_fetch_assoc($query)) :
         </section>
       </div>
     </main>
-
     <!-- backdrop -->
     <div id="modalBackdrop" class="backdrop hidden"></div>
 
@@ -258,11 +257,11 @@ while ($data = mysqli_fetch_assoc($query)) :
           <select name="id_peminjaman" id="id_peminjaman_select">
             <option value="" disabled hidden selected>Pilih peminjaman</option>
             <?php
-    $peminjamanQuery = mysqli_query($conn, "SELECT p.id_peminjaman, u.nama, a.nama_alat FROM peminjaman p JOIN users u ON p.id_user = u.id_user JOIN detail_peminjaman dp ON p.id_peminjaman = dp.id_peminjaman JOIN alat a ON dp.id_alat = a.id_alat GROUP BY p.id_peminjaman");
-while ($pmj = mysqli_fetch_assoc($peminjamanQuery)) {
-    echo '<option value="'.$pmj['id_peminjaman'].'">'.$pmj['nama'].' - '.$pmj['nama_alat'].'</option>';
-}
-?>
+            $peminjamanQuery = mysqli_query($conn, "SELECT p.id_peminjaman, u.nama, a.nama_alat FROM peminjaman p JOIN users u ON p.id_user = u.id_user JOIN detail_peminjaman dp ON p.id_peminjaman = dp.id_peminjaman JOIN alat a ON dp.id_alat = a.id_alat GROUP BY p.id_peminjaman");
+            while ($pmj = mysqli_fetch_assoc($peminjamanQuery)) {
+                echo '<option value="'.$pmj['id_peminjaman'].'">'.$pmj['nama'].' - '.$pmj['nama_alat'].'</option>';
+            }
+            ?>
           </select>
         </div>
         <div class="form">
@@ -287,7 +286,6 @@ while ($pmj = mysqli_fetch_assoc($peminjamanQuery)) {
         </div>
       </form>
     </div>
-
     <script src="./script.js"></script>
   </body>
 </html>
