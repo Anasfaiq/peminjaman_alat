@@ -21,57 +21,112 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // persetujuan peminjaman
 let currentPeminjamanId = null;
+let currentPeminjamanStatus = null;
 
-    function openDetailModal(id, nama) {
-      currentPeminjamanId = id;
-      document.getElementById('peminjamName').textContent = nama;
-      
-      // Fetch detail alat
-      fetch('proses/proses-get-detail-peminjaman.php?id=' + id)
-        .then(response => response.json())
-        .then(data => {
-          let html = '';
-          if(data.length > 0) {
-            data.forEach(item => {
-              html += `<div class="modal-field-item">
+function openDetailModal(id, nama, status) {
+  currentPeminjamanId = id;
+  currentPeminjamanStatus = status;
+  document.getElementById("peminjamName").textContent = nama;
+
+  // Fetch detail alat
+  fetch("proses/proses-get-detail-peminjaman.php?id=" + id)
+    .then((response) => response.json())
+    .then((data) => {
+      let html = "";
+      if (data.length > 0) {
+        data.forEach((item) => {
+          html += `<div class="modal-field-item">
                 <strong>${item.nama_alat}</strong> - Jumlah: ${item.jumlah}
               </div>`;
-            });
-          } else {
-            html = '<p class="text-gray-500">Tidak ada detail alat</p>';
-          }
-          document.getElementById('detailAlatList').innerHTML = html;
         });
-      
-      document.getElementById('detailModal').classList.remove('hidden');
-      document.getElementById('detailModalContent').classList.remove('hidden');
-    }
+      } else {
+        html = '<p class="text-gray-500">Tidak ada detail alat</p>';
+      }
+      document.getElementById("detailAlatList").innerHTML = html;
+    });
 
-    function closeDetailModal() {
-      document.getElementById('detailModal').classList.add('hidden');
-      document.getElementById('detailModalContent').classList.add('hidden');
-    }
+  // Tampilkan/sembunyikan button berdasarkan status
+  const btnSetujui = document.getElementById("btnSetujui");
+  const btnTolak = document.getElementById("btnTolak");
+  const btnBatalkan = document.getElementById("btnBatalkan");
+  const btnHapus = document.getElementById("btnHapus");
 
-    function updateStatusPeminjaman(id, status) {
-      if(!confirm(`Yakin ingin ${status === 'Disetujui' ? 'menyetujui' : 'menolak'} peminjaman ini?`)) return;
-      
-      fetch('proses/proses-update-status-peminjaman.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'id_peminjaman=' + id + '&status=' + status
-      })
-      .then(response => response.json())
-      .then(data => {
-        if(data.success) {
-          alert(data.message);
-          location.reload();
-        } else {
-          alert('Gagal: ' + data.message);
-        }
-      });
-    }
+  // Reset semua button ke hidden
+  btnSetujui.classList.add("hidden");
+  btnTolak.classList.add("hidden");
+  btnBatalkan.classList.add("hidden");
+  btnHapus.classList.add("hidden");
 
-    // Close modal klik outside
-    document.getElementById('detailModal').addEventListener('click', closeDetailModal);
+  // Tampilkan button sesuai status
+  if (status === "Menunggu") {
+    btnSetujui.classList.remove("hidden");
+    btnTolak.classList.remove("hidden");
+  } else if (status === "Disetujui") {
+    btnBatalkan.classList.remove("hidden");
+  } else if (status === "Ditolak") {
+    btnHapus.classList.remove("hidden");
+  }
+
+  document.getElementById("detailModal").classList.remove("hidden");
+  document.getElementById("detailModalContent").classList.remove("hidden");
+}
+
+function closeDetailModal() {
+  document.getElementById("detailModal").classList.add("hidden");
+  document.getElementById("detailModalContent").classList.add("hidden");
+}
+
+function updateStatusPeminjaman(id, status) {
+  let confirmMessage = "";
+
+  if (status === "Disetujui") {
+    confirmMessage = "Yakin ingin menyetujui peminjaman ini?";
+  } else if (status === "Ditolak") {
+    confirmMessage = "Yakin ingin menolak peminjaman ini?";
+  } else if (status === "Menunggu") {
+    confirmMessage = "Yakin ingin membatalkan persetujuan peminjaman ini?";
+  }
+
+  if (!confirm(confirmMessage)) return;
+
+  fetch("proses/proses-update-status-peminjaman.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: "id_peminjaman=" + id + "&status=" + status,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        alert(data.message);
+        location.reload();
+      } else {
+        alert("Gagal: " + data.message);
+      }
+    });
+}
+
+// Close modal klik outside
+document
+  .getElementById("detailModal")
+  .addEventListener("click", closeDetailModal);
+
+function deletePeminjaman(id) {
+  fetch("proses/proses-delete-peminjaman.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: "id_peminjaman=" + id,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        alert(data.message);
+        location.reload();
+      } else {
+        alert("Gagal: " + data.message);
+      }
+    });
+}

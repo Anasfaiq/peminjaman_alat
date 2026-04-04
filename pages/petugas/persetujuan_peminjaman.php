@@ -163,7 +163,7 @@ $peminjaman_list = $result->fetch_all(MYSQLI_ASSOC);
                       </span>
                     </td>
                     <td class="text-center">
-                      <button onclick="openDetailModal(<?= $item['id_peminjaman'] ?>, '<?= htmlspecialchars($item['nama']) ?>')" 
+                      <button onclick="openDetailModal(<?= $item['id_peminjaman'] ?>, '<?= htmlspecialchars($item['nama']) ?>', '<?= $item['status'] ?>')" 
                               class="detail-link">
                         Lihat Detail
                       </button>
@@ -219,13 +219,21 @@ $peminjaman_list = $result->fetch_all(MYSQLI_ASSOC);
         </div>
 
         <div class="modal-actions">
-          <button type="button" onclick="updateStatusPeminjaman(currentPeminjamanId, 'Disetujui')" 
+          <button type="button" id="btnSetujui" onclick="updateStatusPeminjaman(currentPeminjamanId, 'Disetujui')" 
                   class="simpan-btn-petugas">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg> Setujui
           </button>
-          <button type="button" onclick="updateStatusPeminjaman(currentPeminjamanId, 'Ditolak')" 
+          <button type="button" id="btnTolak" onclick="updateStatusPeminjaman(currentPeminjamanId, 'Ditolak')" 
                   class="cancel-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path><path d="M10 10l4 4m0 -4l-4 4"></path></svg> Tolak
+          </button>
+          <button type="button" id="btnBatalkan" onclick="updateStatusPeminjaman(currentPeminjamanId, 'Menunggu')" 
+                  class="edit-btn-petugas hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9 -9a9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1 -9 9a9.75 9.75 0 0 1 -6.74 -2.74L3 16"></path><path d="M3 21v-5h5"></path></svg> Batalkan Peminjaman
+          </button>
+          <button type="button" id="btnHapus" onclick="if(confirm('Yakin ingin menghapus peminjaman yang ditolak ini?')) deletePeminjaman(currentPeminjamanId)" 
+                  class="cancel-btn hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l16 0"></path><path d="M10 11l0 6"></path><path d="M14 11l0 6"></path><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path><path d="M9 7V4a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path></svg> Hapus Peminjaman
           </button>
         </div>
       </div>

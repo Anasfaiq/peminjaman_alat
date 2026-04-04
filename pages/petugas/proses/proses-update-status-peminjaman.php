@@ -24,13 +24,13 @@ if (!$id_peminjaman || empty($status)) {
     exit();
 }
 
-$valid_statuses = ['Disetujui', 'Ditolak'];
+$valid_statuses = ['Disetujui', 'Ditolak', 'Menunggu'];
 if (!in_array($status, $valid_statuses)) {
     echo json_encode(['success' => false, 'message' => 'Status tidak valid']);
     exit();
 }
 
-// Cek peminjaman ada atau tidak dan statusnya masih Menunggu
+// Cek peminjaman ada atau tidak
 $check_query = $conn->prepare("SELECT id_peminjaman, status FROM peminjaman WHERE id_peminjaman = ?");
 $check_query->bind_param("i", $id_peminjaman);
 $check_query->execute();
@@ -42,8 +42,22 @@ if ($check_result->num_rows === 0) {
 }
 
 $peminjaman = $check_result->fetch_assoc();
-if ($peminjaman['status'] !== 'Menunggu') {
-    echo json_encode(['success' => false, 'message' => 'Status peminjaman sudah diubah sebelumnya']);
+
+// Validasi transisi status
+// Dari 'Menunggu' bisa ke 'Disetujui' atau 'Ditolak'
+// Dari 'Disetujui' bisa kembali ke 'Menunggu'
+if ($peminjaman['status'] === 'Menunggu') {
+    if (!in_array($status, ['Disetujui', 'Ditolak'])) {
+        echo json_encode(['success' => false, 'message' => 'Transisi status tidak valid']);
+        exit();
+    }
+} elseif ($peminjaman['status'] === 'Disetujui') {
+    if ($status !== 'Menunggu') {
+        echo json_encode(['success' => false, 'message' => 'Hanya bisa membatalkan persetujuan kembali ke Menunggu']);
+        exit();
+    }
+} else {
+    echo json_encode(['success' => false, 'message' => 'Status peminjaman sudah diubah dan tidak bisa diubah lagi']);
     exit();
 }
 
@@ -56,9 +70,18 @@ if ($update_query->execute()) {
     $aktivitas = "Mengubah status peminjaman menjadi $status";
     logAktivitas($conn, $id_user, $aktivitas, 'peminjaman', $id_peminjaman);
     
+    $message = '';
+    if ($status === 'Disetujui') {
+        $message = 'Peminjaman berhasil disetujui';
+    } elseif ($status === 'Ditolak') {
+        $message = 'Peminjaman berhasil ditolak';
+    } else {
+        $message = 'Persetujuan peminjaman berhasil dibatalkan';
+    }
+    
     echo json_encode([
         'success' => true, 
-        'message' => "Peminjaman berhasil " . ($status === 'Disetujui' ? 'disetujui' : 'ditolak')
+        'message' => $message
     ]);
 } else {
     echo json_encode(['success' => false, 'message' => 'Gagal mengupdate status']);

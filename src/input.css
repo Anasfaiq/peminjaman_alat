@@ -593,7 +593,7 @@
 
   /* Modal Styles Specific */
   .modal-content-form {
-    @apply bg-white rounded-lg p-6;
+    @apply bg-white rounded-lg p-2 ;
   }
 
   .modal-field {
@@ -617,7 +617,7 @@
   }
 
   .modal-actions {
-    @apply grid grid-cols-2 gap-4 mt-6;
+    @apply flex justify-center gap-4 mt-6;
   }
 
   /* Detail Link/Button */
@@ -669,5 +669,10 @@
   .simpan-btn-petugas {
     @apply bg-green-600 text-white flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-center outline-none
            hover:bg-white hover:text-green-600 border border-green-600 hover:border-green-600 hover:scale-105 active:scale-95 transition-all;
+  }
+
+  .edit-btn-petugas {
+    @apply bg-red-600 text-white flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-center outline-none
+           hover:bg-white hover:text-red-600 border border-red-600 hover:border-red-600 hover:scale-105 active:scale-95 transition-all;
   }
 }
