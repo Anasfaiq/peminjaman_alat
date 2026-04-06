@@ -7,6 +7,7 @@
 }
 
 @layer components {
+  /* login page */
   .login-container {
     @apply min-h-screen flex items-center justify-center;
   }
@@ -52,14 +53,19 @@
   /* saat input focus atau ada isinya */
   .left input:focus + label,
   .left input:not(:placeholder-shown) + label {
-    @apply -top-2 text-xs text-blue-500;
+    @apply -top-2 text-xs;
+    color: #1D9E75;
   }
 
   .left input,
   .right-form input {
     @apply w-96 border border-gray-300 rounded-xl
-          px-4 py-3 text-lg
-          focus:border-blue-500 transition;
+          px-4 py-3 text-lg transition;
+  }
+
+  .left input:focus,
+  .right-form input:focus {
+    border-color: #1D9E75;
   }
 
   .left form,
@@ -69,14 +75,20 @@
 
   .left button,
   .right-form button {
-    @apply bg-indigo-600 text-white text-lg font-semibold
-          rounded-xl px-6 py-3 mt-4 w-48
-          hover:bg-indigo-700 transition;
+    @apply text-white text-lg font-semibold
+          rounded-xl px-6 py-3 mt-4 w-48 transition;
+    background: #1D9E75;
+  }
+
+  .left button:hover,
+  .right-form button:hover {
+    background: #0F6E56;
   }
 
   .right {
-    @apply flex-1 z-50 bg-indigo-600 flex flex-col text-center gap-3 items-center justify-center
+    @apply flex-1 z-50 flex flex-col text-center gap-3 items-center justify-center
           text-white text-3xl font-bold transition-transform duration-500;
+    background: #1D9E75;
     border-radius: 150px 0 0 150px;
   }
 
@@ -85,9 +97,15 @@
   }
 
   .right button {
-    @apply border text-sm border-white rounded-xl mt-4 px-4 py-2
-          hover:bg-white hover:text-blue-500 transition;
+    @apply border text-sm border-white rounded-xl mt-4 px-4 py-2 transition;
     width: 160px;
+    background: transparent;
+    color: white;
+  }
+
+  .right button:hover {
+    @apply bg-white;
+    color: #1D9E75;
   }
 
   .right-form {
@@ -107,7 +125,8 @@
 
   .right-form input:focus + label,
   .right-form input:not(:placeholder-shown) + label {
-    @apply -top-2 text-xs text-blue-500;
+    @apply -top-2 text-xs;
+    color: #1D9E75;
   }
 
   .signup-active .right {
@@ -183,8 +202,12 @@
   .sidebar li {
     @apply flex gap-2 items-center
           p-3 rounded-lg whitespace-nowrap
-          hover:bg-indigo-600 hover:text-white
           transition-colors duration-200;
+  }
+
+  .sidebar li:hover {
+    background: #1D9E75;
+    color: white;
   }
 
   .sidebar li svg {
@@ -192,13 +215,15 @@
   }
 
   .sidebar li.active {
-    @apply bg-indigo-600 text-white;
+    background: #1D9E75;
+    @apply text-white;
   }
 
   .user-icon {
-    @apply w-10 h-10 bg-indigo-600 text-white
+    @apply w-10 h-10 text-white
           rounded-full flex items-center justify-center
           text-3xl font-bold;
+    background: #1D9E75;
   }
 
   .dashboard-content {
@@ -228,13 +253,14 @@
   }
 
   .icon-wrapper {
-    @apply w-12 h-12 rounded-xl
+    @apply w-14 h-14 rounded-xl
           flex items-center justify-center
           text-2xl;
   }
 
   .total-equipment-icon {
-    @apply bg-indigo-100 text-indigo-600;
+    background: #E1F5EE;
+    color: #1D9E75;
   }
 
   .active-borrows-icon {
@@ -264,7 +290,8 @@
   }
 
   .profile {
-    @apply w-2 h-2 rounded-full bg-blue-700 flex items-center justify-center animate-pulse;
+    @apply w-2 h-2 rounded-full flex items-center justify-center animate-pulse;
+    background-color: #1D9E75;
   }
 
   .profile p {
@@ -272,7 +299,7 @@
   }
 
   .user-activity {
-    @apply text-blue-500;
+    color: #1D9E75;
   }
 
   .username {
@@ -307,11 +334,18 @@
 
   .top-equipment-section button {
     @apply flex items-center gap-2
-          bg-indigo-600 text-white
+          text-white
           py-2 px-4 rounded-xl border
-          hover:text-indigo-600 hover:bg-white hover:border-indigo-600 hover:border
           hover:scale-105 active:scale-95
           transition-all duration-200;
+    background: #1D9E75;
+    border-color: #1D9E75;
+  }
+
+  .top-equipment-section button:hover {
+    background: white;
+    color: #1D9E75;
+    border-color: #1D9E75;
   }
 
   .bottom-equipment-section {
@@ -329,8 +363,8 @@
 
   .bottom-equipment-section div input {
     @apply border border-gray-300
-          rounded-xl py-2 px-4 w-full
-          focus:outline-blue-600;
+          rounded-xl py-2 px-4 w-full;
+    outline-color: #1D9E75;
   }
 
   .bottom-equipment-section div svg {
@@ -347,8 +381,12 @@
   .edit-button {
     @apply flex items-center justify-center
            h-8 w-8 rounded-xl
-          text-indigo-500 hover:bg-indigo-100
           transition-colors duration-200;
+    color: #1D9E75;
+  }
+
+  .edit-button:hover {
+    background: #E1F5EE;
   }
 
   .button-wrapper {
@@ -462,7 +500,8 @@
   .form input,
   .form select {
     @apply border border-gray-200 rounded-lg px-4 py-3
-        outline-indigo-600 transition;
+        transition;
+    outline-color: #1D9E75;
   }
 
   .button-group {
@@ -475,8 +514,15 @@
   }
 
   .simpan-btn {
-    @apply bg-indigo-600 text-white flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-center outline-none
-           hover:bg-white hover:text-indigo-600 border border-indigo-600 hover:border-indigo-600 hover:scale-105 active:scale-95 transition-all;
+    @apply text-white flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-center outline-none
+           hover:bg-white border hover:scale-105 active:scale-95 transition-all;
+    background: #1D9E75;
+    border-color: #1D9E75;
+  }
+
+  .simpan-btn:hover {
+    color: #1D9E75;
+    background: white;
   }
 
   .alert {
@@ -511,7 +557,8 @@
   }
 
   .icon-indigo {
-    @apply bg-indigo-100 text-indigo-600;
+    background: #E1F5EE;
+    color: #1D9E75;
   }
 
   .icon-amber {
@@ -532,7 +579,9 @@
   }
 
   .filter-tab-pending {
-    @apply text-indigo-600 border-b-4 border-indigo-600 pb-2 font-medium flex items-center gap-2 no-underline;
+    @apply pb-2 font-medium flex items-center gap-2 no-underline;
+    color: #1D9E75;
+    border-bottom: 4px solid #1D9E75;
   }
 
   .filter-tab-approved {
@@ -574,7 +623,12 @@
   }
 
   .print-button {
-    @apply px-6 py-2 bg-indigo-600 text-white rounded-lg font-semibold cursor-pointer flex items-center gap-2 hover:bg-indigo-700;
+    @apply px-6 py-2 text-white rounded-lg font-semibold cursor-pointer flex items-center gap-2;
+    background: #1D9E75;
+  }
+
+  .print-button:hover {
+    background: #0F6E56;
   }
 
   /* Report Header */
@@ -593,7 +647,7 @@
 
   /* Modal Styles Specific */
   .modal-content-form {
-    @apply bg-white rounded-lg p-2 ;
+    @apply bg-white rounded-lg p-2;
   }
 
   .modal-field {
@@ -622,7 +676,12 @@
 
   /* Detail Link/Button */
   .detail-link {
-    @apply bg-none border-none text-indigo-600 cursor-pointer underline px-4 py-2 hover:text-indigo-800;
+    @apply bg-none border-none cursor-pointer underline px-4 py-2;
+    color: #1D9E75;
+  }
+
+  .detail-link:hover {
+    color: #085041;
   }
 
   /* Table Cell Styling */
@@ -645,7 +704,12 @@
 
   /* Quick Action Links */
   .quick-link {
-    @apply bg-indigo-600 text-white px-4 py-2 rounded-lg no-underline font-medium flex items-center gap-2 hover:bg-indigo-700;
+    @apply text-white px-4 py-2 rounded-lg no-underline font-medium flex items-center gap-2;
+    background: #1D9E75;
+  }
+
+  .quick-link:hover {
+    background: #0F6E56;
   }
 
   .quick-link-purple {
@@ -674,5 +738,244 @@
   .edit-btn-petugas {
     @apply bg-red-600 text-white flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-center outline-none
            hover:bg-white hover:text-red-600 border border-red-600 hover:border-red-600 hover:scale-105 active:scale-95 transition-all;
+  }
+
+  /* peminjam — navbar */
+  .db-body {
+    @apply bg-gray-50 min-h-screen;
+  }
+
+  .navbar-peminjam {
+    @apply bg-white border-b border-gray-100 w-full
+          flex justify-between items-center shadow-sm rounded-xl
+          py-0 px-[300px];
+    height: 56px;
+  }
+
+  .left-header-peminjam {
+    @apply flex items-center gap-10;
+  }
+
+  .left-header-peminjam p {
+    @apply text-base font-medium;
+    color: #1D9E75;
+    letter-spacing: -0.3px;
+  }
+
+  .left-header-peminjam ul {
+    @apply flex items-center gap-1;
+  }
+
+  .left-header-peminjam ul li {
+    @apply text-sm text-gray-500 px-3 py-1.5 rounded-lg cursor-pointer
+          hover:bg-gray-100 hover:text-gray-800 transition-colors duration-150;
+  }
+
+  .left-header-peminjam ul li.active {
+    @apply bg-gray-100 text-gray-800 font-medium;
+  }
+
+  .right-header-peminjam {
+    @apply flex items-center gap-3;
+  }
+
+  /* nav avatar & user info */
+  .nav-avatar {
+    @apply w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium;
+    background: #E1F5EE;
+    color: #0F6E56;
+  }
+
+  .nav-username {
+    @apply text-sm font-medium text-gray-800;
+  }
+
+  .nav-logout-btn {
+    @apply flex items-center gap-1.5 text-xs text-gray-500 font-medium
+          px-3 py-1.5 rounded-lg border border-gray-200
+          hover:bg-red-100 hover:text-red-700 transition-colors duration-150 no-underline;
+  }
+
+  /* peminjam — main layout */
+  .dashboard-content-peminjam {
+    @apply flex flex-col gap-5 px-[300px] py-6;
+  }
+
+  /* peminjam — welcome bar */
+  .welcome-bar {
+    @apply flex items-center justify-between;
+  }
+
+  .welcome-title {
+    @apply text-xl font-medium text-gray-900;
+  }
+
+  .welcome-sub {
+    @apply text-sm text-gray-500 mt-0.5;
+  }
+
+  .add-peminjam-btn {
+    @apply rounded-lg hover:scale-105 active:scale-95 transition-all duration-150;
+    background: #1D9E75;
+    border: 1px solid #1D9E75;
+    color: white;
+  }
+
+  .add-peminjam-btn:hover {
+    background: white;
+    color: #1D9E75;
+  }
+
+  .add-peminjam-btn button {
+    @apply flex items-center gap-2 text-sm font-medium px-4 py-2;
+  }
+
+  /* peminjam — stat cards */
+  .dashboard-cards-peminjam {
+    @apply grid grid-cols-3 gap-4;
+  }
+
+  .dashboard-card-peminjam {
+    @apply bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:scale-101 transition-all duration-150
+          flex justify-between items-start;
+  }
+
+  .card-text-peminjam {
+    @apply flex flex-col gap-1;
+  }
+
+  .card-text-peminjam h3 {
+    @apply text-xs text-gray-500;
+  }
+
+  .card-text-peminjam p {
+    @apply text-3xl font-medium;
+  }
+
+  .card-text-peminjam small {
+    @apply text-xs text-gray-400 mt-1;
+  }
+
+  .text-amber-peminjam {
+    color: #BA7517;
+  }
+
+  .text-green-peminjam {
+    color: #1D9E75;
+  }
+
+  .icon-wrapper-peminjam {
+    @apply w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0;
+  }
+
+  .icon-blue-peminjam {
+    background: #E6F1FB;
+    color: #378ADD;
+  }
+
+  .icon-amber-peminjam {
+    background: #FAEEDA;
+    color: #BA7517;
+  }
+
+  .icon-green-peminjam {
+    background: #EAF3DE;
+    color: #1D9E75;
+  }
+
+  /* peminjam — active borrowings list */
+  .card-peminjam {
+    @apply bg-white shadow-sm rounded-xl border border-gray-100 flex flex-col overflow-hidden;
+  }
+
+  .card-peminjam-header {
+    @apply flex items-center justify-between px-5 py-4 border-b border-gray-100;
+  }
+
+  .card-peminjam-header p {
+    @apply text-sm font-medium text-gray-800;
+  }
+
+  .view-all-btn {
+    @apply text-xs font-medium border-none bg-none cursor-pointer transition-colors duration-150;
+    color: #1D9E75;
+  }
+
+  .view-all-btn:hover {
+    color: #0F6E56;
+  }
+
+  .borrow-item-row {
+    @apply flex items-center gap-4 px-5 py-4 border-b border-gray-100 last:border-b-0
+          hover:bg-gray-100 transition-colors duration-150;
+  }
+
+  .borrow-item-late {
+    @apply hover:bg-red-50;
+    background: #fff8f8;
+  }
+
+  .borrow-item-icon {
+    @apply w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0;
+  }
+
+  .borrow-item-info {
+    @apply flex-1;
+  }
+
+  .item-name {
+    @apply text-sm font-medium text-gray-900;
+  }
+
+  .item-dates {
+    @apply flex gap-4 text-xs text-gray-400 mt-1;
+  }
+
+  .late-text {
+    color: #A32D2D;
+  }
+
+  .progress-bar {
+    @apply mt-2 rounded-full overflow-hidden;
+    height: 3px;
+    background: #f0f0f0;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 9999px;
+  }
+
+  .borrow-item-right {
+    @apply flex items-center gap-2;
+  }
+
+  .badge {
+    @apply text-xs font-medium px-2.5 py-1 rounded-lg;
+  }
+
+  .badge-ok {
+    background: #E1F5EE;
+    color: #0F6E56;
+  }
+
+  .badge-late {
+    background: #FCEBEB;
+    color: #A32D2D;
+  }
+
+  .action-btn {
+    @apply text-xs px-3 py-1.5 rounded-lg border border-gray-300
+          text-gray-500 bg-white cursor-pointer
+          hover:bg-gray-200 transition-colors duration-150;
+  }
+
+  .action-btn-late {
+    border-color: #F09595;
+    color: #A32D2D;
+  }
+
+  .action-btn-late:hover {
+    background: #FCEBEB;
   }
 }
