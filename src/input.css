@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@theme {
+  --color-teal-primary: #1D9E75;
+  --color-teal-dark: #0F6E56;
+}
+
+
 @layer base {
   body {
     @apply bg-gray-100 text-gray-900;
@@ -826,7 +832,7 @@
     color: #1D9E75;
   }
 
-  .add-peminjam-btn button {
+  .add-peminjam-btn a {
     @apply flex items-center gap-2 text-sm font-medium px-4 py-2;
   }
 
@@ -977,5 +983,83 @@
 
   .action-btn-late:hover {
     background: #FCEBEB;
+  }
+
+  /* daftar alat */
+  .header-card-peminjam {
+    @apply bg-white shadow-sm p-4 flex flex-col gap-1 justify-center rounded-lg;
+  }
+
+  .header-card-peminjam h3 {
+    @apply text-xl font-medium;
+  }
+
+  .header-card-peminjam p {
+    @apply text-sm text-gray-500;
+  }
+
+  .list-item-cards {
+    @apply grid grid-cols-3 gap-4;
+  }
+
+  .list-item-card {
+    @apply flex flex-col justify-center gap-4
+          bg-white shadow-sm rounded-lg border border-gray-100 px-5 py-4
+          hover:scale-101 hover:shadow-lg transition-all duration-150;
+  }
+
+  .card-header {
+    @apply w-12 h-12 rounded-xl
+          flex items-center justify-center
+          text-2xl;
+  }
+
+  .card-body {
+    @apply flex-1 flex flex-col gap-1;
+  }
+
+  .title {
+    @apply text-lg font-medium text-gray-900;
+  }
+
+  .meta {
+    @apply flex gap-2 text-sm;
+  }
+
+  .category {
+    @apply px-2 py-1 rounded-full text-gray-500 bg-gray-100;
+  }
+
+  .stock {
+    @apply px-2 py-1 rounded-full text-gray-500 bg-gray-100;
+  }
+
+  .badge-ok {
+    background: #E1F5EE;
+    color: #0F6E56;
+  }
+
+  .badge-late {
+    background: #FCEBEB;
+    color: #A32D2D;
+  }
+
+  .description {
+    @apply text-sm text-gray-500;
+  }
+
+  .card-footer {
+    @apply flex items-center;
+  }
+
+  .card-footer button {
+    @apply text-sm font-medium px-4 py-2 rounded-lg border border-gray-300
+          text-white bg-teal-primary cursor-pointer w-full
+          hover:bg-white border hover:border-teal-primary hover:text-teal-primary transition-colors duration-150;
+  }
+
+  .card-footer button:disabled {
+    @apply bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed;
+    color: #9ca3af;
   }
 }
