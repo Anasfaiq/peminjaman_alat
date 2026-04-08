@@ -62,7 +62,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      stroke-width="1"
+      stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
     >
