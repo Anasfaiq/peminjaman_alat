@@ -25,11 +25,15 @@
     <section class="left-header-peminjam">
       <p>Peminjaman Alat</p>
       <ul>
-        <li class="active">Dashboard</li>
+        <li class="active">
+          <a href="dashboard.php">Dashboard</a>
+        </li>
         <li>
           <a href="daftar_alat.php">Daftar Alat</a>
         </li>
-        <li>Pinjaman Saya</li>
+        <li>
+          <a href="pinjaman_user.php">Pinjaman Saya</a>
+        </li>
       </ul>
     </section>
     <section class="right-header-peminjam">

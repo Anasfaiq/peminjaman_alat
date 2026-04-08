@@ -3,12 +3,12 @@
   include '../../../config/conn.php';
 
   if (!isset($_SESSION['id_user'])) {
-      header('Location: ../peminjam/daftar_alat.php');
+      header('Location: ../daftar_alat.php');
       exit;
   }
 
   if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-      header('Location: ../peminjam/daftar_alat.php');
+      header('Location: ../daftar_alat.php');
       exit;
   }
 
@@ -20,12 +20,12 @@
 
   /* validasi input */
   if ($jumlah < 1 || empty($tanggal_pinjam) || empty($tanggal_kembali)) {
-      header('Location: ../peminjam/daftar_alat.php?error=Input tidak valid');
+      header('Location: ../daftar_alat.php?error=Input tidak valid');
       exit;
   }
 
   if ($tanggal_kembali <= $tanggal_pinjam) {
-      header('Location: ../peminjam/daftar_alat.php?error=Tanggal kembali harus setelah tanggal pinjam');
+      header('Location: ../daftar_alat.php?error=Tanggal kembali harus setelah tanggal pinjam');
       exit;
   }
 
@@ -34,7 +34,7 @@
   $alat = mysqli_fetch_assoc($cek);
 
   if (!$alat || $alat['stok'] < $jumlah) {
-      header('Location: ../peminjam/daftar_alat.php?error=Stok tidak mencukupi');
+      header('Location: ../daftar_alat.php?error=Stok tidak mencukupi');
       exit;
   }
 
@@ -68,12 +68,12 @@
       }
 
       mysqli_commit($conn);
-      header('Location: ../peminjam/daftar_alat.php?success=1');
+      header('Location: ../daftar_alat.php?success=1');
       exit;
 
   } catch (Exception $e) {
       mysqli_rollback($conn);
-      header('Location: ../peminjam/daftar_alat.php?error=' . urlencode($e->getMessage()));
+      header('Location: ../daftar_alat.php?error=' . urlencode($e->getMessage()));
       exit;
   }
 ?>
