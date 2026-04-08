@@ -1062,4 +1062,79 @@
     @apply bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed;
     color: #9ca3af;
   }
+
+  .pinjaman-cards {
+    @apply bg-white shadow-sm p-4 rounded-lg;
+  }
+
+  .pinjaman-card {
+    @apply flex gap-4;
+  }
+
+  .pinjaman-content {
+    @apply flex flex-col w-full gap-4;
+  }
+
+  .upper-pinjaman-content {
+    @apply flex justify-between;
+  }
+
+  .upper-pinjaman-content h3 {
+    @apply text-lg font-medium;
+  }
+
+  .deskripsi-pinjaman {
+    @apply flex flex-col gap-2;
+  }
+
+  .deskripsi-pinjaman span {
+    @apply text-sm text-gray-500 flex gap-2 items-center;
+  }
+
+  .pinjaman-card-footer button {
+    @apply w-full bg-teal-primary text-white border-2 hover:border-teal-primary hover:text-teal-primary hover:bg-white
+          px-4 py-2 rounded-xl transition-all duration-150;
+  }
+
+  .list-item-pinjam-cards {
+    @apply grid grid-cols-2 gap-4;
+  }
+
+  .list-item-pinjam-card {
+    @apply flex flex-col justify-center gap-4
+          bg-white shadow-sm rounded-lg border border-gray-100 px-5 py-4
+          hover:shadow-md hover:border-teal-primary transition-all duration-150;
+  }
+
+  .list-history-pinjaman {
+    @apply flex flex-col gap-4;
+  }
+
+  .history-pinjaman-card {
+    @apply flex justify-between items-center gap-3 bg-white shadow-sm rounded-lg border border-gray-100 px-5 py-4;
+  }
+
+  .left-history-content {
+    @apply flex flex-col gap-1;
+  }
+
+  .item-history {
+    @apply flex gap-2;
+  }
+
+  .item-history span {
+    @apply text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full;
+  }
+
+  .item-history h3 {
+    @apply text-lg font-medium text-gray-900;
+  }
+
+  .history-date {
+    @apply text-sm text-gray-400 flex gap-2 items-center;
+  }
+
+  .right-history-content {
+    @apply flex items-center gap-2;
+  }
 }
