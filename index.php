@@ -49,56 +49,43 @@
 
         <div class="right-form">
           <h2>Sign Up</h2>
-          <p>Sign in to your account</p>
+          <p>Daftar sebagai Peminjam Alat</p>
           <form action="config/register.php" method="POST">
             <div class="input-group">
               <input
                 type="text"
-                id="username"
+                id="signupNama"
                 class="peer"
                 name="nama"
                 placeholder=" "
                 required
               />
-              <label for="username">Nama</label>
+              <label for="signupNama">Nama</label>
             </div>
             <div class="input-group">
               <input
                 type="text"
-                id="username"
+                id="signupUsername"
                 class="peer"
                 name="username"
                 placeholder=" "
                 required
               />
-              <label for="username">Username</label>
+              <label for="signupUsername">Username</label>
             </div>
             <div class="input-group">
               <input
                 type="password"
-                id="password"
+                id="signupPassword"
                 class="peer"
                 name="password"
                 placeholder=" "
                 required
               />
-              <label for="password">Password</label>
+              <label for="signupPassword">Password</label>
             </div>
-            <div class="input-group">
-              <select
-                id="role"
-                class="peer"
-                name="role"
-                placeholder="Pilih Role"
-                required
-              >
-                <option value="" disabled selected hidden>Pilih Role</option>
-                <option value="admin">Admin</option>
-                <option value="petugas">Petugas</option>
-                <option value="peminjam">Peminjam</option>
-              </select>
-            </div>
-            <button type="submit" name="register" class="btn">Sign In</button>
+            <input type="hidden" name="role" value="peminjam" />
+            <button type="submit" name="register" class="btn">Daftar</button>
           </form>
         </div>
       </div>
