@@ -3,6 +3,7 @@ session_start();
 include "../../config/conn.php";
 include "../../config/auth-check.php";
 include "../../config/logging.php";
+include "../../config/payment-helper.php";
 
 // Proteksi: hanya petugas yang bisa akses
 checkAuth('petugas');
@@ -23,10 +24,14 @@ if($filter_status === 'all') {
         pg.denda,
         u.nama,
         p.tanggal_pinjam,
-        p.tanggal_kembali_rencana
+        p.tanggal_kembali_rencana,
+        SUM(CASE WHEN bd.status_pembayaran_denda='Belum Dibayar' THEN bd.jumlah_denda ELSE 0 END) as denda_belum_bayar,
+        COUNT(bd.id_denda) as total_denda_items
         FROM pengembalian pg
         JOIN peminjaman p ON pg.id_peminjaman = p.id_peminjaman
         JOIN users u ON p.id_user = u.id_user
+        LEFT JOIN beban_denda bd ON p.id_peminjaman = bd.id_peminjaman
+        GROUP BY pg.id_pengembalian
         ORDER BY pg.tanggal_kembali DESC";
     $result = $conn->query($query);
 } elseif($filter_status === 'terlambat') {
@@ -38,11 +43,15 @@ if($filter_status === 'all') {
         pg.denda,
         u.nama,
         p.tanggal_pinjam,
-        p.tanggal_kembali_rencana
+        p.tanggal_kembali_rencana,
+        SUM(CASE WHEN bd.status_pembayaran_denda='Belum Dibayar' THEN bd.jumlah_denda ELSE 0 END) as denda_belum_bayar,
+        COUNT(bd.id_denda) as total_denda_items
         FROM pengembalian pg
         JOIN peminjaman p ON pg.id_peminjaman = p.id_peminjaman
         JOIN users u ON p.id_user = u.id_user
+        LEFT JOIN beban_denda bd ON p.id_peminjaman = bd.id_peminjaman
         WHERE pg.tanggal_kembali > p.tanggal_kembali_rencana
+        GROUP BY pg.id_pengembalian
         ORDER BY pg.tanggal_kembali DESC";
     $result = $conn->query($query);
 } elseif($filter_status === 'rusak') {
@@ -54,11 +63,15 @@ if($filter_status === 'all') {
         pg.denda,
         u.nama,
         p.tanggal_pinjam,
-        p.tanggal_kembali_rencana
+        p.tanggal_kembali_rencana,
+        SUM(CASE WHEN bd.status_pembayaran_denda='Belum Dibayar' THEN bd.jumlah_denda ELSE 0 END) as denda_belum_bayar,
+        COUNT(bd.id_denda) as total_denda_items
         FROM pengembalian pg
         JOIN peminjaman p ON pg.id_peminjaman = p.id_peminjaman
         JOIN users u ON p.id_user = u.id_user
+        LEFT JOIN beban_denda bd ON p.id_peminjaman = bd.id_peminjaman
         WHERE pg.kondisi_kembali = 'Rusak'
+        GROUP BY pg.id_pengembalian
         ORDER BY pg.tanggal_kembali DESC";
     $result = $conn->query($query);
 }
@@ -265,6 +278,7 @@ $total_denda = $conn->query("SELECT SUM(denda) as total FROM pengembalian")->fet
                 <th scope="col">Tanggal Kembali</th>
                 <th scope="col">Kondisi</th>
                 <th scope="col">Denda</th>
+                <th scope="col">Pembayaran Denda</th>
                 <th scope="col">Status</th>
               </tr>
             </thead>
@@ -287,6 +301,18 @@ $total_denda = $conn->query("SELECT SUM(denda) as total FROM pengembalian")->fet
                     </td>
                     <td><?= $item['denda'] > 0 ? 'Rp' . number_format($item['denda'], 0, ',', '.') : '-' ?></td>
                     <td>
+                      <?php if ($item['total_denda_items'] > 0): ?>
+                        <span class=\"badge <?= ($item['denda_belum_bayar'] > 0) ? 'badge-late' : 'badge-ok'; ?>\">
+                          <?= ($item['denda_belum_bayar'] > 0) ? 'Belum Dibayar' : 'Lunas'; ?>
+                        </span>
+                        <div class="text-xs text-gray-500 mt-1">
+                          (<?= formatRupiah($item['denda_belum_bayar'] ?? 0) ?>)
+                        </div>
+                      <?php else: ?>
+                        <span class="text-gray-400">-</span>
+                      <?php endif; ?>
+                    </td>
+                    <td>
                       <span class=\"<?php echo $terlambat ? 'status-pending' : 'status-approved'; ?>\">
                         <?= $status_text ?>
                       </span>
@@ -295,7 +321,7 @@ $total_denda = $conn->query("SELECT SUM(denda) as total FROM pengembalian")->fet
                 <?php endforeach; ?>
               <?php else: ?>
                 <tr>
-                  <td colspan="7" class="table-cell-empty">
+                  <td colspan="8" class="table-cell-empty">
                     Tidak ada data pengembalian
                   </td>
                 </tr>

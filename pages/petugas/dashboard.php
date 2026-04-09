@@ -3,6 +3,7 @@ session_start();
 include "../../config/conn.php";
 include "../../config/auth-check.php";
 include "../../config/logging.php";
+include "../../config/payment-helper.php";
 
 // Proteksi: hanya petugas yang bisa akses
 checkAuth('petugas');
@@ -31,6 +32,18 @@ $total_return_today = mysqli_fetch_assoc($return_today_query)['total'];
 $rejected_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM peminjaman WHERE status='Ditolak'");
 $total_rejected = mysqli_fetch_assoc($rejected_query)['total'];
 
+// Denda monitoring - Total belum bayar
+$denda_belum_query = mysqli_query($conn, "SELECT SUM(jumlah_denda) as total FROM beban_denda WHERE status_pembayaran_denda='Belum Dibayar'");
+$denda_belum_data = mysqli_fetch_assoc($denda_belum_query);
+$total_denda_belum = $denda_belum_data['total'] ?? 0;
+
+// Denda monitoring - Jumlah user dengan denda belum bayar
+$denda_user_query = mysqli_query($conn, "SELECT COUNT(DISTINCT bd.id_peminjaman) as total 
+                                          FROM beban_denda bd 
+                                          WHERE bd.status_pembayaran_denda='Belum Dibayar'");
+$denda_user_data = mysqli_fetch_assoc($denda_user_query);
+$total_denda_users = $denda_user_data['total'] ?? 0;
+
 // Data peminjaman menunggu (untuk quick view)
 $pending_list_query = mysqli_query($conn, "SELECT p.id_peminjaman, u.nama, p.tanggal_pinjam, 
                                            p.tanggal_kembali_rencana, COUNT(d.id_detail) as jumlah_alat
@@ -41,6 +54,17 @@ $pending_list_query = mysqli_query($conn, "SELECT p.id_peminjaman, u.nama, p.tan
                                            GROUP BY p.id_peminjaman
                                            ORDER BY p.created_at DESC
                                            LIMIT 5");
+
+// Data denda - untuk display di monitoring section
+$denda_monitoring_query = mysqli_query($conn, "SELECT bd.id_denda, bd.id_peminjaman, bd.tipe_denda, 
+                                               bd.jumlah_denda, bd.status_pembayaran_denda, bd.keterangan,
+                                               u.nama, u.username, p.tanggal_pinjam
+                                               FROM beban_denda bd
+                                               JOIN peminjaman p ON bd.id_peminjaman = p.id_peminjaman
+                                               JOIN users u ON p.id_user = u.id_user
+                                               WHERE bd.status_pembayaran_denda='Belum Dibayar'
+                                               ORDER BY bd.created_at DESC
+                                               LIMIT 10");
 ?>
 
 <!DOCTYPE html>
@@ -200,8 +224,72 @@ $pending_list_query = mysqli_query($conn, "SELECT p.id_peminjaman, u.nama, p.tan
             </div>
           <?php endif; ?>
         </div>
-      </div>
-    </main>
+
+        <!-- Monitoring Denda Section -->
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+            Monitoring Denda Peminjaman
+            <?php if ($total_denda_belum > 0): ?>
+              <span class="badge badge-late">Belum Dibayar: <?= $total_denda_users ?></span>
+            <?php endif; ?>
+          </h3>
+          
+          <?php if($total_denda_belum > 0): ?>
+            <div class="mb-4 p-4 bg-red-50 rounded-lg border border-red-200">
+              <p class="text-sm text-red-700">
+                <strong>Total Denda Belum Dibayar:</strong> <?= formatRupiah($total_denda_belum) ?> 
+                <span class="text-gray-600">(<?= $total_denda_users ?> peminjaman)</span>
+              </p>
+            </div>
+
+            <table class="crud-table w-full text-sm">
+              <thead>
+                <tr>
+                  <th>Peminjam</th>
+                  <th>Tipe Denda</th>
+                  <th>Keterangan</th>
+                  <th>Jumlah</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php while($row = mysqli_fetch_assoc($denda_monitoring_query)): ?>
+                  <tr>
+                    <td>
+                      <div>
+                        <strong><?= htmlspecialchars($row['nama']) ?></strong>
+                        <br>
+                        <small class="text-gray-500">@<?= htmlspecialchars($row['username']) ?></small>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge <?= ($row['tipe_denda'] == 'Rusak') ? 'badge-late' : 'badge-ok'; ?>">
+                        <?= htmlspecialchars($row['tipe_denda']) ?>
+                      </span>
+                    </td>
+                    <td>
+                      <small><?= htmlspecialchars(substr($row['keterangan'], 0, 40)); ?><?= (strlen($row['keterangan']) > 40) ? '...' : ''; ?></small>
+                    </td>
+                    <td>
+                      <strong><?= formatRupiah($row['jumlah_denda']) ?></strong>
+                    </td>
+                    <td>
+                      <span class="badge badge-late"><?= htmlspecialchars($row['status_pembayaran_denda']) ?></span>
+                    </td>
+                  </tr>
+                <?php endwhile; ?>
+              </tbody>
+            </table>
+
+            <div class="mt-4 pt-4 border-t border-gray-200">
+              <p class="text-xs text-gray-500">Catatan: Status denda akan otomatis berubah menjadi "Lunas" setelah peminjam menyelesaikan pembayaran di halaman pembayaran mereka.</p>
+            </div>
+          <?php else: ?>
+            <div class="py-8 text-center text-gray-500">
+              <p>✓ Semua denda telah dibayar!</p>
+            </div>
+          <?php endif; ?>
+        </div>
   </body>
 
   <script src="script.js"></script>
