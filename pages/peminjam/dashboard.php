@@ -1,6 +1,7 @@
 <?php
   session_start();
   include '../../config/conn.php';
+  include '../../config/payment-helper.php';
 
   if (!isset($_SESSION['id_user'])) {
       die("Belum Login!");
@@ -9,6 +10,57 @@
   $id_user = $_SESSION['id_user'];
   $sql = mysqli_query($conn, "SELECT nama FROM users WHERE id_user='$id_user'");
   $data = mysqli_fetch_assoc($sql);
+
+  // Total dipinjam sepanjang waktu
+  $total_pinjam_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM peminjaman WHERE id_user='$id_user'");
+  $total_pinjam = mysqli_fetch_assoc($total_pinjam_query)['total'];
+
+  // Sedang dipinjam (status Disetujui dan belum dikembalikan)
+  $sedang_pinjam_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM peminjaman p 
+                                              WHERE p.id_user='$id_user' 
+                                              AND p.status='Disetujui' 
+                                              AND p.id_peminjaman NOT IN (SELECT id_peminjaman FROM pengembalian)");
+  $sedang_pinjam = mysqli_fetch_assoc($sedang_pinjam_query)['total'];
+
+  // Sudah dikembalikan
+  $sudah_kembali_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM pengembalian pg
+                                              JOIN peminjaman p ON pg.id_peminjaman = p.id_peminjaman
+                                              WHERE p.id_user='$id_user'");
+  $sudah_kembali = mysqli_fetch_assoc($sudah_kembali_query)['total'];
+
+  // Hitung terlambat
+  $terlambat_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM peminjaman p
+                                         WHERE p.id_user='$id_user'
+                                         AND p.status='Disetujui'
+                                         AND p.id_peminjaman NOT IN (SELECT id_peminjaman FROM pengembalian)
+                                         AND p.tanggal_kembali_rencana < NOW()");
+  $terlambat = mysqli_fetch_assoc($terlambat_query)['total'];
+
+  // Query peminjaman aktif dengan detail lengkap
+  $active_borrowing_query = mysqli_query($conn, "SELECT p.id_peminjaman, p.tanggal_pinjam, p.tanggal_kembali_rencana,
+                                               GROUP_CONCAT(a.nama_alat SEPARATOR ', ') as alat_list,
+                                               COUNT(d.id_detail) as jumlah_alat,
+                                               CASE 
+                                                 WHEN p.tanggal_kembali_rencana < NOW() THEN 'terlambat'
+                                                 ELSE 'tepat'
+                                               END as status_waktu
+                                               FROM peminjaman p
+                                               LEFT JOIN detail_peminjaman d ON p.id_peminjaman = d.id_peminjaman
+                                               LEFT JOIN alat a ON d.id_alat = a.id_alat
+                                               WHERE p.id_user='$id_user'
+                                               AND p.status='Disetujui'
+                                               AND p.id_peminjaman NOT IN (SELECT id_peminjaman FROM pengembalian)
+                                               GROUP BY p.id_peminjaman
+                                               ORDER BY p.tanggal_pinjam DESC
+                                               LIMIT 3");
+  $active_borrowings = [];
+  while($row = mysqli_fetch_assoc($active_borrowing_query)) {
+    $active_borrowings[] = $row;
+  }
+
+  // Hitung progress
+  $total_active = $sedang_pinjam > 0 ? $sedang_pinjam : 1; // avoid division by zero
+  $persentase_selesai = $total_pinjam > 0 ? round(($sudah_kembali / $total_pinjam) * 100) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -83,7 +135,7 @@
       <div class="dashboard-card-peminjam">
         <div class="card-text-peminjam">
           <h3>Total Dipinjam</h3>
-          <p>12</p>
+          <p><?= $total_pinjam ?></p>
           <small>Sepanjang waktu</small>
         </div>
         <div class="icon-wrapper-peminjam icon-blue-peminjam">
@@ -103,8 +155,8 @@
       <div class="dashboard-card-peminjam">
         <div class="card-text-peminjam">
           <h3>Sedang Dipinjam</h3>
-          <p class="text-amber-peminjam">3</p>
-          <small>1 terlambat dikembalikan</small>
+          <p class="text-amber-peminjam"><?= $sedang_pinjam ?></p>
+          <small><?= $terlambat > 0 ? $terlambat . ' terlambat dikembalikan' : 'Semua tepat waktu' ?></small>
         </div>
         <div class="icon-wrapper-peminjam icon-amber-peminjam">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
@@ -120,8 +172,8 @@
       <div class="dashboard-card-peminjam">
         <div class="card-text-peminjam">
           <h3>Sudah Dikembalikan</h3>
-          <p class="text-green-peminjam">9</p>
-          <small>75% selesai</small>
+          <p class="text-green-peminjam"><?= $sudah_kembali ?></p>
+          <small><?= $persentase_selesai ?>% selesai</small>
         </div>
         <div class="icon-wrapper-peminjam icon-green-peminjam">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
@@ -138,91 +190,67 @@
     <section class="card-peminjam">
       <div class="card-peminjam-header">
         <p>Peminjaman Aktif</p>
-        <button class="view-all-btn">Lihat semua</button>
+        <button class="view-all-btn" onclick="location.href='pinjaman_user.php'">Lihat semua</button>
       </div>
 
-      <!-- item: on time -->
-      <div class="borrow-item-row">
-        <div class="borrow-item-icon" style="background:#E6F1FB;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-            fill="none" stroke="#378ADD" stroke-width="1.8"
-            stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="3" width="20" height="14" rx="2"/>
-            <line x1="8" y1="21" x2="16" y2="21"/>
-            <line x1="12" y1="17" x2="12" y2="21"/>
-          </svg>
-        </div>
-        <div class="borrow-item-info">
-          <p class="item-name">Proyektor Epson EB-X41</p>
-          <div class="item-dates">
-            <span>Pinjam: 10/2/2026</span>
-            <span>Kembali: 20/2/2026</span>
+      <?php if(count($active_borrowings) > 0): ?>
+        <?php foreach($active_borrowings as $borrow): 
+          $is_late = $borrow['status_waktu'] === 'terlambat';
+          $date_pinjam = new DateTime($borrow['tanggal_pinjam']);
+          $date_kembali = new DateTime($borrow['tanggal_kembali_rencana']);
+          $today = new DateTime();
+          $interval = $today->diff($date_pinjam);
+          $total_days = $interval->days + 1;
+          $interval_progress = $date_kembali->diff($date_pinjam);
+          $total_duration = $interval_progress->days + 1;
+          $progress_pct = min(($total_days / $total_duration) * 100, 100);
+        ?>
+          <div class="borrow-item-row <?= $is_late ? 'borrow-item-late' : '' ?>">
+            <div class="borrow-item-icon <?= $is_late ? 'borrow-item-icon-late' : 'borrow-item-icon-ok' ?>">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round" class="<?= $is_late ? 'text-red-700' : 'text-blue-600' ?>">
+                <?php if($is_late): ?>
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <line x1="12" y1="19" x2="12" y2="23"/>
+                  <line x1="8" y1="23" x2="16" y2="23"/>
+                <?php else: ?>
+                  <rect x="2" y="3" width="20" height="14" rx="2"/>
+                  <line x1="8" y1="21" x2="16" y2="21"/>
+                  <line x1="12" y1="17" x2="12" y2="21"/>
+                <?php endif; ?>
+              </svg>
+            </div>
+            <div class="borrow-item-info">
+              <p class="item-name <?= $is_late ? 'late-text' : '' ?>"><?= htmlspecialchars($borrow['alat_list']) ?></p>
+              <div class="item-dates">
+                <span>Pinjam: <?= date('d/m/Y', strtotime($borrow['tanggal_pinjam'])) ?></span>
+                <?php if($is_late): ?>
+                  <span class="late-text font-medium">Kembali: <?= date('d/m/Y', strtotime($borrow['tanggal_kembali_rencana'])) ?> — sudah lewat!</span>
+                <?php else: ?>
+                  <span>Kembali: <?= date('d/m/Y', strtotime($borrow['tanggal_kembali_rencana'])) ?></span>
+                <?php endif; ?>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill <?= $is_late ? 'progress-fill-late' : 'progress-fill-ok' ?>" style="width:<?= $progress_pct ?>%;"></div>
+              </div>
+            </div>
+            <div class="borrow-item-right">
+              <span class="badge <?= $is_late ? 'badge-late' : 'badge-ok' ?>">
+                <?= $is_late ? 'Terlambat' : 'On Time' ?>
+              </span>
+              <button class="action-btn <?= $is_late ? 'action-btn-late' : '' ?>" onclick="location.href='pinjaman_user.php#id-<?= $borrow['id_peminjaman'] ?>'">
+                Kembalikan
+              </button>
+            </div>
           </div>
-          <div class="progress-bar">
-            <div class="progress-fill" style="width:70%; background:#1D9E75;"></div>
-          </div>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <div class="empty-state">
+          <p>Tidak ada peminjaman aktif saat ini</p>
         </div>
-        <div class="borrow-item-right">
-          <span class="badge badge-ok">On Time</span>
-          <button class="action-btn">Kembalikan</button>
-        </div>
-      </div>
-
-      <!-- item: on time -->
-      <div class="borrow-item-row">
-        <div class="borrow-item-icon" style="background:#EAF3DE;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-            fill="none" stroke="#3B6D11" stroke-width="1.8"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-            <circle cx="12" cy="13" r="4"/>
-          </svg>
-        </div>
-        <div class="borrow-item-info">
-          <p class="item-name">Kamera Canon EOS 90D</p>
-          <div class="item-dates">
-            <span>Pinjam: 12/2/2026</span>
-            <span>Kembali: 19/2/2026</span>
-          </div>
-          <div class="progress-bar">
-            <div class="progress-fill" style="width:55%; background:#1D9E75;"></div>
-          </div>
-        </div>
-        <div class="borrow-item-right">
-          <span class="badge badge-ok">On Time</span>
-          <button class="action-btn">Kembalikan</button>
-        </div>
-      </div>
-
-      <!-- item: late -->
-      <div class="borrow-item-row borrow-item-late">
-        <div class="borrow-item-icon" style="background:#FCEBEB;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-            fill="none" stroke="#A32D2D" stroke-width="1.8"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-            <line x1="12" y1="19" x2="12" y2="23"/>
-            <line x1="8" y1="23" x2="16" y2="23"/>
-          </svg>
-        </div>
-        <div class="borrow-item-info">
-          <p class="item-name late-text">Mikrofon Wireless Shure</p>
-          <div class="item-dates">
-            <span>Pinjam: 5/2/2026</span>
-            <span class="late-text" style="font-weight:500;">Kembali: 15/2/2026 — sudah lewat!</span>
-          </div>
-          <div class="progress-bar">
-            <div class="progress-fill" style="width:100%; background:#E24B4A;"></div>
-          </div>
-        </div>
-        <div class="borrow-item-right">
-          <span class="badge badge-late">Terlambat</span>
-          <button class="action-btn action-btn-late">Kembalikan</button>
-        </div>
-      </div>
-
-    </section>
+      <?php endif; ?>
   </main>
 </body>
 </html>

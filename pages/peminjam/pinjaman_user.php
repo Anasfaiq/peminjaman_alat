@@ -1,6 +1,7 @@
 <?php
   session_start();
   include '../../config/conn.php';
+  include '../../config/payment-helper.php';
 
   if (!isset($_SESSION['id_user'])) {
       die("Belum Login!");
@@ -12,7 +13,7 @@
 
   /* active borrowings — status Disetujui dan belum ada pengembalian */
   $sql_aktif = mysqli_query($conn, "
-    SELECT p.id_peminjaman, p.tanggal_pinjam, p.tanggal_kembali_rencana, p.status,
+    SELECT p.id_peminjaman, p.tanggal_pinjam, p.tanggal_kembali_rencana, p.status, p.total_biaya, p.status_pembayaran,
            a.id_alat, a.nama_alat, a.kondisi,
            k.nama_kategori,
            dp.jumlah,
@@ -30,7 +31,7 @@
 
   /* menunggu persetujuan */
   $sql_menunggu = mysqli_query($conn, "
-    SELECT p.id_peminjaman, p.tanggal_pinjam, p.tanggal_kembali_rencana, p.status,
+    SELECT p.id_peminjaman, p.tanggal_pinjam, p.tanggal_kembali_rencana, p.status, p.total_biaya, p.status_pembayaran,
            a.nama_alat,
            k.nama_kategori,
            dp.jumlah
@@ -45,7 +46,7 @@
 
   /* history — sudah dikembalikan atau ditolak */
   $sql_history = mysqli_query($conn, "
-    SELECT p.id_peminjaman, p.tanggal_pinjam, p.tanggal_kembali_rencana, p.status,
+    SELECT p.id_peminjaman, p.tanggal_pinjam, p.tanggal_kembali_rencana, p.status, p.total_biaya, p.status_pembayaran,
            a.nama_alat,
            k.nama_kategori,
            dp.jumlah,
@@ -133,13 +134,13 @@
             <div class="pinjaman-content">
               <div class="upper-pinjaman-content">
                 <h3><?= htmlspecialchars($row['nama_alat']) ?></h3>
-                <span class="badge" style="background:#FAEEDA;color:#BA7517;">Menunggu</span>
+                <span class="badge badge-pending-pinjam">Menunggu</span>
               </div>
               <div class="deskripsi-pinjaman">
                 <span><?= htmlspecialchars($row['nama_kategori']) ?></span>
                 <span>Jumlah: <?= $row['jumlah'] ?></span>
               </div>
-              <div class="deskripsi-pinjaman" style="margin-top:4px;">
+              <div class="deskripsi-pinjaman mt-1">
                 <span>
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                     fill="none" stroke="currentColor" stroke-width="2"
@@ -175,7 +176,7 @@
     <section class="pinjaman-cards">
       <p class="text-lg font-medium mb-3">Active Borrowings</p>
       <?php if (mysqli_num_rows($sql_aktif) === 0): ?>
-        <div class="list-item-pinjam-card" style="width:100%;">
+        <div class="list-item-pinjam-card w-full">
           <p class="text-gray-400 text-sm py-6 text-center">Tidak ada peminjaman aktif.</p>
         </div>
       <?php else: ?>
@@ -209,16 +210,28 @@
                 <span><?= htmlspecialchars($row['nama_kategori']) ?></span>
                 <span>Jumlah: <?= $row['jumlah'] ?></span>
               </div>
-              <div class="deskripsi-pinjaman" style="margin-top:4px;">
+              <div class="deskripsi-pinjaman mt-1">
                 <span>Pinjam: <?= date('d/m/Y', strtotime($row['tanggal_pinjam'])) ?></span>
                 <span <?= $terlambat ? 'class="late-text"' : '' ?>>
                   Kembali: <?= date('d/m/Y', strtotime($row['tanggal_kembali_rencana'])) ?>
                 </span>
               </div>
-              <div class="pinjaman-card-footer">
-                <button onclick="openModalKembali(<?= $row['id_peminjaman'] ?>, '<?= htmlspecialchars($row['nama_alat'], ENT_QUOTES) ?>')">
+              <!-- Info Pembayaran -->
+              <div class="deskripsi-pinjaman pinjaman-info-separator">
+                <span class="text-xs">
+                  Biaya: <strong><?= formatRupiah($row['total_biaya']) ?></strong>
+                </span>
+                <span class="text-xs <?= ($row['status_pembayaran'] == 'Lunas') ? 'status-paid' : 'status-unpaid' ?>">
+                  Status: <?= ($row['status_pembayaran'] == 'Lunas') ? '✓ Lunas' : '✗ Belum Bayar' ?>
+                </span>
+              </div>
+              <div class="pinjaman-footer-buttons">
+                <button onclick="openModalKembali(<?= $row['id_peminjaman'] ?>, '<?= htmlspecialchars($row['nama_alat'], ENT_QUOTES) ?>')" class="pinjaman-footer-btn">
                   Ajukan Pengembalian
                 </button>
+                <a href="pembayaran.php?id_peminjaman=<?= $row['id_peminjaman'] ?>" class="pinjaman-payment-link">
+                  Pembayaran
+                </a>
               </div>
             </div>
           </div>
@@ -257,11 +270,20 @@
                 <?= $row['tanggal_kembali'] ? date('d/m/Y', strtotime($row['tanggal_kembali'])) : date('d/m/Y', strtotime($row['tanggal_kembali_rencana'])) ?>
               </p>
             </div>
+            <p class="history-item-description">
+              <strong>Biaya Sewa:</strong> <?= formatRupiah($row['total_biaya']) ?>
+            </p>
             <?php if ($row['denda'] > 0): ?>
-              <p style="font-size:12px;color:#A32D2D;margin-top:4px;">
-                Denda: Rp<?= number_format($row['denda'], 0, ',', '.') ?>
+              <p class="history-item-denda">
+                <strong>Denda:</strong> <?= formatRupiah($row['denda']) ?>
               </p>
             <?php endif; ?>
+            <p class="history-item-status">
+              <strong>Status Pembayaran:</strong> 
+              <span class="<?= ($row['status_pembayaran'] == 'Lunas') ? 'history-item-status-paid' : 'history-item-status-unpaid' ?>">
+                <?= ($row['status_pembayaran'] == 'Lunas') ? '✓ Lunas' : '✗ Belum Bayar' ?>
+              </span>
+            </p>
           </div>
           <div class="right-history-content">
             <?php if ($row['status'] === 'Ditolak'): ?>

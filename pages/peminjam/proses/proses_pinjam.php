@@ -1,6 +1,7 @@
 <?php
   session_start();
   include '../../../config/conn.php';
+  include '../../../config/payment-helper.php';
 
   if (!isset($_SESSION['id_user'])) {
       header('Location: ../daftar_alat.php');
@@ -30,7 +31,7 @@
   }
 
   /* cek stok tersedia */
-  $cek = mysqli_query($conn, "SELECT stok FROM alat WHERE id_alat='$id_alat'");
+  $cek = mysqli_query($conn, "SELECT stok, harga_sewa FROM alat WHERE id_alat='$id_alat'");
   $alat = mysqli_fetch_assoc($cek);
 
   if (!$alat || $alat['stok'] < $jumlah) {
@@ -42,9 +43,17 @@
   mysqli_begin_transaction($conn);
 
   try {
+      /* hitung biaya sewa */
+      $date_pinjam = new DateTime($tanggal_pinjam);
+      $date_kembali = new DateTime($tanggal_kembali);
+      $interval = $date_pinjam->diff($date_kembali);
+      $hari_pinjam = $interval->days + 1; // +1 karena menghitung inklusif
+      
+      $total_biaya = ($alat['harga_sewa'] * $hari_pinjam * $jumlah);
+
       /* insert ke tabel peminjaman */
-      $sql_pinjam = "INSERT INTO peminjaman (id_user, tanggal_pinjam, tanggal_kembali_rencana, status, created_at)
-                     VALUES ('$id_user', '$tanggal_pinjam', '$tanggal_kembali', 'Menunggu', NOW())";
+      $sql_pinjam = "INSERT INTO peminjaman (id_user, tanggal_pinjam, tanggal_kembali_rencana, status, total_biaya, status_pembayaran, created_at)
+                     VALUES ('$id_user', '$tanggal_pinjam', '$tanggal_kembali', 'Menunggu', '$total_biaya', 'Belum Dibayar', NOW())";
 
       if (!mysqli_query($conn, $sql_pinjam)) {
           throw new Exception('Gagal membuat peminjaman');
@@ -60,6 +69,11 @@
           throw new Exception('Gagal menyimpan detail peminjaman');
       }
 
+      /* buat record pembayaran */
+      if (!buatPembayaran($id_peminjaman, $id_user, $total_biaya, 'Biaya sewa peminjaman alat', $conn)) {
+          throw new Exception('Gagal membuat record pembayaran');
+      }
+
       /* kurangi stok alat */
       $sql_stok = "UPDATE alat SET stok = stok - '$jumlah' WHERE id_alat='$id_alat'";
 
@@ -68,7 +82,7 @@
       }
 
       mysqli_commit($conn);
-      header('Location: ../daftar_alat.php?success=1');
+      header('Location: ../pinjaman_user.php?success=1');
       exit;
 
   } catch (Exception $e) {
