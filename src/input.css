@@ -1,10 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --color-teal-primary: #1D9E75;
-  --color-teal-dark: #0F6E56;
+  --color-teal-primary: #1d9e75;
+  --color-teal-dark: #0f6e56;
 }
-
 
 @layer base {
   body {
@@ -60,7 +59,7 @@
   .left input:focus + label,
   .left input:not(:placeholder-shown) + label {
     @apply -top-2 text-xs;
-    color: #1D9E75;
+    color: #1d9e75;
   }
 
   .left input,
@@ -71,7 +70,7 @@
 
   .left input:focus,
   .right-form input:focus {
-    border-color: #1D9E75;
+    border-color: #1d9e75;
   }
 
   .left form,
@@ -83,18 +82,18 @@
   .right-form button {
     @apply text-white text-lg font-semibold
           rounded-xl px-6 py-3 mt-4 w-48 transition;
-    background: #1D9E75;
+    background: #1d9e75;
   }
 
   .left button:hover,
   .right-form button:hover {
-    background: #0F6E56;
+    background: #0f6e56;
   }
 
   .right {
     @apply flex-1 z-50 flex flex-col text-center gap-3 items-center justify-center
           text-white text-3xl font-bold transition-transform duration-500;
-    background: #1D9E75;
+    background: #1d9e75;
     border-radius: 150px 0 0 150px;
   }
 
@@ -111,7 +110,7 @@
 
   .right button:hover {
     @apply bg-white;
-    color: #1D9E75;
+    color: #1d9e75;
   }
 
   .right-form {
@@ -132,7 +131,7 @@
   .right-form input:focus + label,
   .right-form input:not(:placeholder-shown) + label {
     @apply -top-2 text-xs;
-    color: #1D9E75;
+    color: #1d9e75;
   }
 
   .signup-active .right {
@@ -212,7 +211,7 @@
   }
 
   .sidebar li:hover {
-    background: #1D9E75;
+    background: #1d9e75;
     color: white;
   }
 
@@ -221,7 +220,7 @@
   }
 
   .sidebar li.active {
-    background: #1D9E75;
+    background: #1d9e75;
     @apply text-white;
   }
 
@@ -229,7 +228,7 @@
     @apply w-10 h-10 text-white
           rounded-full flex items-center justify-center
           text-3xl font-bold;
-    background: #1D9E75;
+    background: #1d9e75;
   }
 
   .dashboard-content {
@@ -265,8 +264,8 @@
   }
 
   .total-equipment-icon {
-    background: #E1F5EE;
-    color: #1D9E75;
+    background: #e1f5ee;
+    color: #1d9e75;
   }
 
   .active-borrows-icon {
@@ -297,7 +296,7 @@
 
   .profile {
     @apply w-2 h-2 rounded-full flex items-center justify-center animate-pulse;
-    background-color: #1D9E75;
+    background-color: #1d9e75;
   }
 
   .profile p {
@@ -305,7 +304,7 @@
   }
 
   .user-activity {
-    color: #1D9E75;
+    color: #1d9e75;
   }
 
   .username {
@@ -344,14 +343,14 @@
           py-2 px-4 rounded-xl border
           hover:scale-105 active:scale-95
           transition-all duration-200;
-    background: #1D9E75;
-    border-color: #1D9E75;
+    background: #1d9e75;
+    border-color: #1d9e75;
   }
 
   .top-equipment-section button:hover {
     background: white;
-    color: #1D9E75;
-    border-color: #1D9E75;
+    color: #1d9e75;
+    border-color: #1d9e75;
   }
 
   .bottom-equipment-section {
@@ -370,7 +369,7 @@
   .bottom-equipment-section div input {
     @apply border border-gray-300
           rounded-xl py-2 px-4 w-full;
-    outline-color: #1D9E75;
+    outline-color: #1d9e75;
   }
 
   .bottom-equipment-section div svg {
@@ -388,11 +387,11 @@
     @apply flex items-center justify-center
            h-8 w-8 rounded-xl
           transition-colors duration-200;
-    color: #1D9E75;
+    color: #1d9e75;
   }
 
   .edit-button:hover {
-    background: #E1F5EE;
+    background: #e1f5ee;
   }
 
   .button-wrapper {
@@ -507,7 +506,7 @@
   .form select {
     @apply border border-gray-200 rounded-lg px-4 py-3
         transition;
-    outline-color: #1D9E75;
+    outline-color: #1d9e75;
   }
 
   .button-group {
@@ -522,12 +521,12 @@
   .simpan-btn {
     @apply text-white flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-center outline-none
            hover:bg-white border hover:scale-105 active:scale-95 transition-all;
-    background: #1D9E75;
-    border-color: #1D9E75;
+    background: #1d9e75;
+    border-color: #1d9e75;
   }
 
   .simpan-btn:hover {
-    color: #1D9E75;
+    color: #1d9e75;
     background: white;
   }
 
@@ -563,8 +562,8 @@
   }
 
   .icon-indigo {
-    background: #E1F5EE;
-    color: #1D9E75;
+    background: #e1f5ee;
+    color: #1d9e75;
   }
 
   .icon-amber {
@@ -586,8 +585,8 @@
 
   .filter-tab-pending {
     @apply pb-2 font-medium flex items-center gap-2 no-underline;
-    color: #1D9E75;
-    border-bottom: 4px solid #1D9E75;
+    color: #1d9e75;
+    border-bottom: 4px solid #1d9e75;
   }
 
   .filter-tab-approved {
@@ -630,11 +629,11 @@
 
   .print-button {
     @apply px-6 py-2 text-white rounded-lg font-semibold cursor-pointer flex items-center gap-2;
-    background: #1D9E75;
+    background: #1d9e75;
   }
 
   .print-button:hover {
-    background: #0F6E56;
+    background: #0f6e56;
   }
 
   /* Report Header */
@@ -683,7 +682,7 @@
   /* Detail Link/Button */
   .detail-link {
     @apply bg-none border-none cursor-pointer underline px-4 py-2;
-    color: #1D9E75;
+    color: #1d9e75;
   }
 
   .detail-link:hover {
@@ -711,11 +710,11 @@
   /* Quick Action Links */
   .quick-link {
     @apply text-white px-4 py-2 rounded-lg no-underline font-medium flex items-center gap-2;
-    background: #1D9E75;
+    background: #1d9e75;
   }
 
   .quick-link:hover {
-    background: #0F6E56;
+    background: #0f6e56;
   }
 
   .quick-link-purple {
@@ -764,7 +763,7 @@
 
   .left-header-peminjam p {
     @apply text-base font-medium;
-    color: #1D9E75;
+    color: #1d9e75;
     letter-spacing: -0.3px;
   }
 
@@ -788,8 +787,8 @@
   /* nav avatar & user info */
   .nav-avatar {
     @apply w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium;
-    background: #E1F5EE;
-    color: #0F6E56;
+    background: #e1f5ee;
+    color: #0f6e56;
   }
 
   .nav-username {
@@ -822,14 +821,14 @@
 
   .add-peminjam-btn {
     @apply rounded-lg hover:scale-105 active:scale-95 transition-all duration-150;
-    background: #1D9E75;
-    border: 1px solid #1D9E75;
+    background: #1d9e75;
+    border: 1px solid #1d9e75;
     color: white;
   }
 
   .add-peminjam-btn:hover {
     background: white;
-    color: #1D9E75;
+    color: #1d9e75;
   }
 
   .add-peminjam-btn a {
@@ -863,11 +862,11 @@
   }
 
   .text-amber-peminjam {
-    color: #BA7517;
+    color: #ba7517;
   }
 
   .text-green-peminjam {
-    color: #1D9E75;
+    color: #1d9e75;
   }
 
   .icon-wrapper-peminjam {
@@ -875,18 +874,18 @@
   }
 
   .icon-blue-peminjam {
-    background: #E6F1FB;
-    color: #378ADD;
+    background: #e6f1fb;
+    color: #378add;
   }
 
   .icon-amber-peminjam {
-    background: #FAEEDA;
-    color: #BA7517;
+    background: #faeeda;
+    color: #ba7517;
   }
 
   .icon-green-peminjam {
-    background: #EAF3DE;
-    color: #1D9E75;
+    background: #eaf3de;
+    color: #1d9e75;
   }
 
   /* peminjam — active borrowings list */
@@ -904,11 +903,11 @@
 
   .view-all-btn {
     @apply text-xs font-medium border-none bg-none cursor-pointer transition-colors duration-150;
-    color: #1D9E75;
+    color: #1d9e75;
   }
 
   .view-all-btn:hover {
-    color: #0F6E56;
+    color: #0f6e56;
   }
 
   .borrow-item-row {
@@ -938,7 +937,7 @@
   }
 
   .late-text {
-    color: #A32D2D;
+    color: #a32d2d;
   }
 
   .progress-bar {
@@ -961,13 +960,13 @@
   }
 
   .badge-ok {
-    background: #E1F5EE;
-    color: #0F6E56;
+    background: #e1f5ee;
+    color: #0f6e56;
   }
 
   .badge-late {
-    background: #FCEBEB;
-    color: #A32D2D;
+    background: #fcebeb;
+    color: #a32d2d;
   }
 
   .action-btn {
@@ -977,12 +976,12 @@
   }
 
   .action-btn-late {
-    border-color: #F09595;
-    color: #A32D2D;
+    border-color: #f09595;
+    color: #a32d2d;
   }
 
   .action-btn-late:hover {
-    background: #FCEBEB;
+    background: #fcebeb;
   }
 
   /* daftar alat */
@@ -1035,13 +1034,13 @@
   }
 
   .badge-ok {
-    background: #E1F5EE;
-    color: #0F6E56;
+    background: #e1f5ee;
+    color: #0f6e56;
   }
 
   .badge-late {
-    background: #FCEBEB;
-    color: #A32D2D;
+    background: #fcebeb;
+    color: #a32d2d;
   }
 
   .description {
@@ -1136,5 +1135,506 @@
 
   .right-history-content {
     @apply flex items-center gap-2;
+  }
+
+  /* peminjam — pinjaman user page */
+  .badge-pending-pinjam {
+    background: #faeeda;
+    color: #ba7517;
+  }
+
+  .pinjaman-info-separator {
+    @apply mt-1.5 pt-2 border-t border-gray-100;
+  }
+
+  .status-paid {
+    @apply text-green-600;
+  }
+
+  .status-unpaid {
+    @apply text-red-600;
+  }
+
+  .pinjaman-footer-buttons {
+    @apply flex gap-2.5;
+  }
+
+  .pinjaman-footer-btn {
+    @apply flex-1 bg-teal-primary text-white font-bold py-2 px-3 rounded-lg cursor-pointer
+           hover:bg-white hover:text-teal-primary hover:border-teal-primary border-2 border-teal-primary
+           transition-all duration-150;
+  }
+
+  .pinjaman-payment-link {
+    @apply flex-1 text-center bg-blue-600 text-white font-bold py-2 px-3 rounded-lg
+           no-underline cursor-pointer
+           hover:bg-white hover:text-blue-600 border-2 border-blue-600 transition-all duration-150;
+  }
+
+  .history-item-description {
+    @apply text-xs text-gray-600 mt-1;
+  }
+
+  .history-item-denda {
+    @apply text-xs mt-1;
+    color: #a32d2d;
+  }
+
+  .history-item-status {
+    @apply text-xs text-gray-600 mt-1;
+  }
+
+  .history-item-status-paid {
+    @apply !text-green-600;
+  }
+
+  .history-item-status-unpaid {
+    @apply !text-red-600;
+  }
+
+  /* peminjam — borrow item icon variants */
+  .borrow-item-icon-ok {
+    background: #e6f1fb;
+  }
+
+  .borrow-item-icon-late {
+    background: #fcebeb;
+  }
+
+  /* peminjam — empty state */
+  .empty-state {
+    @apply p-10 text-center text-gray-600;
+  }
+
+  /* peminjam — progress fill variants */
+  .progress-fill-ok {
+    background: #1d9e75;
+  }
+
+  .progress-fill-late {
+    background: #e24b4a;
+  }
+
+  /* ===== Payment & Fine Management ===== */
+
+  /* Payment Page */
+  .payment-container {
+    @apply max-w-3xl mx-auto p-5;
+  }
+
+  .payment-body {
+    @apply bg-gray-100 min-h-screen;
+  }
+
+  .payment-header {
+    @apply mb-7;
+  }
+
+  .payment-back-link {
+    @apply text-blue-600 no-underline block mb-3;
+  }
+
+  .payment-title {
+    @apply text-2xl font-bold m-0 mb-1;
+  }
+
+  .payment-subtitle {
+    @apply text-gray-600 m-0 text-sm;
+  }
+
+  .payment-card {
+    @apply bg-white rounded-lg p-5 mb-5 shadow-sm;
+  }
+
+  .payment-card h3 {
+    @apply mt-0 mb-4 text-lg font-semibold;
+  }
+
+  .payment-item {
+    @apply flex justify-between py-3 px-0 border-b border-gray-100;
+  }
+
+  .payment-item.total {
+    @apply border-b-2 border-gray-900 font-bold text-base mt-2 pt-2;
+  }
+
+  .payment-item strong {
+    @apply text-gray-900;
+  }
+
+  .payment-badge {
+    @apply inline-block px-2 py-1 rounded text-xs font-bold;
+  }
+
+  .payment-badge.lunas {
+    @apply bg-green-100 text-green-700;
+  }
+
+  .payment-badge.belum {
+    @apply bg-red-100 text-red-700;
+  }
+
+  .payment-badge.denda {
+    @apply bg-blue-100 text-blue-700;
+  }
+
+  .payment-form-group {
+    @apply mb-4;
+  }
+
+  .payment-form-label {
+    @apply block mb-1 font-bold text-sm;
+  }
+
+  .payment-form-textarea {
+    @apply w-full p-2 border border-gray-300 rounded font-sans text-sm;
+  }
+
+  .payment-btn {
+    @apply w-full bg-green-600 text-white p-3 rounded font-bold mt-5 cursor-pointer hover:bg-green-700 transition;
+  }
+
+  .payment-btn:disabled {
+    @apply bg-gray-400 cursor-not-allowed;
+  }
+
+  .btn-bayar {
+    @apply w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg cursor-pointer
+           hover:bg-green-700 active:scale-95 transition-all duration-150;
+  }
+
+  .btn-bayar:disabled {
+    @apply bg-gray-400 cursor-not-allowed;
+  }
+
+  .payment-alert {
+    @apply p-3 rounded mb-5 text-sm;
+  }
+
+  .payment-alert.info {
+    @apply bg-blue-100 text-blue-700 border-l-4 border-blue-700;
+  }
+
+  .payment-item-detail {
+    @apply text-xs text-gray-600;
+  }
+
+  .payment-text-right {
+    @apply text-right;
+  }
+
+  .payment-text-muted {
+    @apply text-gray-600 text-xs;
+  }
+
+  .payment-note {
+    @apply text-gray-600 pt-4 border-t border-gray-100 mt-4 text-xs;
+  }
+
+  .payment-denda-rusak {
+    @apply text-red-600 font-bold;
+  }
+
+  .payment-denda-telat {
+    @apply text-red-600 font-bold;
+  }
+
+  .payment-biaya-sewa {
+    @apply text-green-600 font-bold;
+  }
+
+  .payment-table {
+    @apply w-full border-collapse;
+  }
+
+  .payment-table thead {
+    @apply bg-gray-100 border-b-2 border-gray-300;
+  }
+
+  .payment-table th,
+  .payment-table td {
+    @apply px-3 py-2 text-left text-sm border-b border-gray-200;
+  }
+
+  .payment-table tbody tr:hover {
+    @apply bg-gray-50;
+  }
+
+  /* Fine Management Dashboard */
+  .denda-container {
+    @apply max-w-5xl mx-auto p-5;
+  }
+
+  .denda-body {
+    @apply bg-gray-100 min-h-screen;
+  }
+
+  .denda-header {
+    @apply flex justify-between items-center mb-7;
+  }
+
+  .denda-header-title {
+    @apply text-2xl font-bold m-0;
+  }
+
+  .denda-back-link {
+    @apply text-blue-600 no-underline;
+  }
+
+  .denda-stats-grid {
+    @apply grid grid-cols-3 gap-5 mb-7;
+  }
+
+  .denda-stat-card {
+    @apply bg-white p-5 rounded-lg shadow-sm;
+  }
+
+  .denda-stat-label {
+    @apply text-gray-600 text-sm mb-2;
+  }
+
+  .denda-stat-value {
+    @apply text-2xl font-bold text-gray-900;
+  }
+
+  .denda-stat-value.merah {
+    @apply text-red-600;
+  }
+
+  .denda-stat-value.hijau {
+    @apply text-green-600;
+  }
+
+  .denda-card {
+    @apply bg-white rounded-lg p-5 shadow-sm;
+  }
+
+  .denda-card h3 {
+    @apply mt-0 mb-5;
+  }
+
+  .denda-no-data {
+    @apply text-center p-10 text-gray-600;
+  }
+
+  .denda-table {
+    @apply w-full border-collapse;
+  }
+
+  .denda-table thead {
+    @apply bg-gray-100 border-b-2 border-gray-300;
+  }
+
+  .denda-table th {
+    @apply px-3 py-3 text-left text-sm font-bold text-gray-700;
+  }
+
+  .denda-table td {
+    @apply px-3 py-3 text-sm border-b border-gray-200;
+  }
+
+  .denda-table tbody tr:hover {
+    @apply bg-gray-50;
+  }
+
+  .denda-badge {
+    @apply inline-block px-3 py-1 rounded text-xs font-bold;
+  }
+
+  .denda-badge.rusak {
+    @apply bg-red-100 text-red-700;
+  }
+
+  .denda-badge.telat {
+    @apply bg-blue-100 text-blue-700;
+  }
+
+  .denda-badge.belum {
+    @apply bg-yellow-100 text-yellow-700;
+  }
+
+  .denda-badge.lunas {
+    @apply bg-green-100 text-green-700;
+  }
+
+  .denda-btn {
+    @apply px-3 py-1.5 rounded border text-xs font-medium cursor-pointer transition;
+  }
+
+  .denda-btn.primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700;
+  }
+
+  .denda-btn.success {
+    @apply bg-green-600 text-white hover:bg-green-700;
+  }
+
+  .denda-action-cell {
+    @apply text-center;
+  }
+
+  .denda-tambahan-info {
+    @apply text-xs text-gray-500 mt-1;
+  }
+
+  /* Payment Form Styles */
+  .payment-form-group {
+    @apply mb-4;
+  }
+
+  .payment-form-label {
+    @apply block mb-2 font-bold;
+  }
+
+  .payment-form-input {
+    @apply w-full px-2 py-2 border border-gray-300 rounded text-sm;
+    font-family: Arial, sans-serif;
+  }
+
+  .payment-note {
+    @apply text-gray-600 text-sm mt-4 pt-4 border-t border-gray-200;
+  }
+
+  .payment-note p {
+    @apply m-0;
+  }
+
+  .payment-success-text {
+    @apply text-center text-green-600 text-base p-5;
+  }
+
+  /* Payment Table */
+  .payment-table {
+    @apply w-full border-collapse;
+  }
+
+  .payment-table thead tr {
+    @apply bg-gray-100 border-b-2 border-gray-300;
+  }
+
+  .payment-table th {
+    @apply px-4 py-2 text-left text-sm font-bold text-gray-700;
+  }
+
+  .payment-table tbody tr {
+    @apply border-b border-gray-200;
+  }
+
+  .payment-table tbody tr:hover {
+    @apply bg-gray-50;
+  }
+
+  .payment-table td {
+    @apply px-4 py-4 text-sm;
+  }
+
+  /* Text Alignment Utilities */
+  .text-right {
+    @apply text-right;
+  }
+
+  .text-center {
+    @apply text-center;
+  }
+
+  /* Daftar Denda Admin Page */
+  .denda-body {
+    @apply bg-gray-100 m-0 p-0;
+  }
+
+  .denda-container {
+    @apply max-w-6xl mx-auto p-5;
+  }
+
+  .denda-header {
+    @apply flex justify-between items-center mb-8;
+  }
+
+  .denda-title {
+    @apply text-3xl font-bold m-0 text-gray-800;
+  }
+
+  .denda-back-link {
+    @apply no-underline text-blue-600 hover:text-blue-800 font-medium;
+  }
+
+  .denda-alert {
+    @apply p-3 rounded-lg mb-5;
+  }
+
+  .denda-alert-success {
+    @apply bg-green-100 text-green-700 border-l-4 border-green-700;
+  }
+
+  .denda-stats-grid {
+    @apply grid grid-cols-3 gap-5 mb-8;
+  }
+
+  .denda-stat-card {
+    @apply bg-white p-5 rounded-lg shadow-sm;
+  }
+
+  .denda-stat-label {
+    @apply text-gray-600 text-sm mb-2;
+  }
+
+  .denda-stat-value {
+    @apply text-2xl font-bold text-gray-800;
+  }
+
+  .denda-stat-belum {
+    @apply !text-red-600;
+  }
+
+  .denda-stat-lunas {
+    @apply !text-green-600;
+  }
+
+  .denda-table-card {
+    @apply bg-white rounded-lg p-5 shadow-sm;
+  }
+
+  .denda-table-title {
+    @apply mt-0 mb-5 text-lg font-bold text-gray-800;
+  }
+
+  .denda-table {
+    @apply w-full border-collapse;
+  }
+
+  .denda-table thead tr {
+    @apply bg-gray-100 border-b-2 border-gray-300;
+  }
+
+  .denda-table th {
+    @apply p-3 text-left text-sm font-bold text-gray-700;
+  }
+
+  .denda-table td {
+    @apply p-3 border-b border-gray-200;
+  }
+
+  .denda-table tbody tr:hover {
+    @apply bg-gray-50;
+  }
+
+  .denda-username {
+    @apply text-gray-600 text-xs;
+  }
+
+  .denda-action-form {
+    @apply inline;
+  }
+
+  .denda-action-cell {
+    @apply text-center;
+  }
+
+  .denda-status-inactive {
+    @apply text-gray-500 text-xs;
+  }
+
+  .denda-no-data {
+    @apply text-center p-10 text-gray-600;
   }
 }
