@@ -42,6 +42,28 @@ $stmt = $conn->prepare($laporan_query);
 $stmt->bind_param("ss", $start_date, $end_date);
 $stmt->execute();
 $laporan_data = $stmt->get_result()->fetch_assoc();
+
+// Query pemasukan dari pembayaran sewa
+$pemasukan_sewa_query = "SELECT COALESCE(SUM(pb.jumlah_pembayaran), 0) as pemasukan_sewa
+  FROM pembayaran pb
+  WHERE pb.status_pembayaran = 'Lunas' AND DATE(pb.tanggal_pembayaran) >= ? AND DATE(pb.tanggal_pembayaran) <= ?";
+
+$stmt_sewa = $conn->prepare($pemasukan_sewa_query);
+$stmt_sewa->bind_param("ss", $start_date, $end_date);
+$stmt_sewa->execute();
+$pemasukan_sewa = $stmt_sewa->get_result()->fetch_assoc();
+
+// Query pemasukan dari pembayaran denda
+$pemasukan_denda_query = "SELECT COALESCE(SUM(bd.jumlah_denda), 0) as pemasukan_denda
+  FROM beban_denda bd
+  WHERE bd.status_pembayaran_denda = 'Lunas' AND DATE(bd.tanggal_pembayaran_denda) >= ? AND DATE(bd.tanggal_pembayaran_denda) <= ?";
+
+$stmt_denda = $conn->prepare($pemasukan_denda_query);
+$stmt_denda->bind_param("ss", $start_date, $end_date);
+$stmt_denda->execute();
+$pemasukan_denda = $stmt_denda->get_result()->fetch_assoc();
+
+$total_pemasukan = $pemasukan_sewa['pemasukan_sewa'] + $pemasukan_denda['pemasukan_denda'];
 ?>
 
 <!DOCTYPE html>
@@ -188,6 +210,62 @@ $laporan_data = $stmt->get_result()->fetch_assoc();
       /* Di layar, sembunyiin versi print */
       #print-version {
         display: none;
+      }
+
+      /* Bento Grid Layout */
+      .report-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin: 24px 0;
+      }
+
+      .dashboard-card:nth-child(1) {
+        grid-column: span 2;
+        grid-row: span 2;
+      }
+
+      .dashboard-card:nth-child(4) {
+        grid-column: span 2;
+        grid-row: span 2;
+      }
+
+      .dashboard-card:nth-child(10) {
+        grid-column: span 2;
+        grid-row: span 1;
+      }
+
+      @media (max-width: 1400px) {
+        .report-stats-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .dashboard-card:nth-child(1) {
+          grid-column: span 2;
+          grid-row: span 1;
+        }
+
+        .dashboard-card:nth-child(4) {
+          grid-column: span 2;
+          grid-row: span 1;
+        }
+
+        .dashboard-card:nth-child(10) {
+          grid-column: span 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .report-stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .dashboard-card:nth-child(1),
+        .dashboard-card:nth-child(4),
+        .dashboard-card:nth-child(10) {
+          grid-column: span 1;
+          grid-row: span 1;
+        }
       }
     </style>
   </head>
@@ -362,7 +440,37 @@ $laporan_data = $stmt->get_result()->fetch_assoc();
                 <p>Rp<?= number_format($laporan_data['total_denda'] ?: 0, 0, ',', '.') ?></p>
               </div>
               <div class="icon-wrapper icon-indigo">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 9v6m-3 0h6"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-cash-banknote-off"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9.88 9.878a3 3 0 1 0 4.242 4.243m.58 -3.425a3.012 3.012 0 0 0 -1.412 -1.405" /><path d="M10 6h9a2 2 0 0 1 2 2v8c0 .294 -.064 .574 -.178 .825m-2.822 1.175h-13a2 2 0 0 1 -2 -2v-8a2 2 0 0 1 2 -2h1" /><path d="M18 12l.01 0" /><path d="M6 12l.01 0" /><path d="M3 3l18 18" /></svg>
+              </div>
+            </div>
+
+            <div class="dashboard-card">
+              <div class="card-text">
+                <h3>Pemasukan Sewa</h3>
+                <p>Rp<?= number_format($pemasukan_sewa['pemasukan_sewa'] ?: 0, 0, ',', '.') ?></p>
+              </div>
+              <div class="icon-wrapper icon-emerald">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-building-bank"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 21l18 0" /><path d="M3 10l18 0" /><path d="M5 6l7 -3l7 3" /><path d="M4 10l0 11" /><path d="M20 10l0 11" /><path d="M8 14l0 3" /><path d="M12 14l0 3" /><path d="M16 14l0 3" /></svg>
+              </div>
+            </div>
+
+            <div class="dashboard-card">
+              <div class="card-text">
+                <h3>Pemasukan Denda</h3>
+                <p>Rp<?= number_format($pemasukan_denda['pemasukan_denda'] ?: 0, 0, ',', '.') ?></p>
+              </div>
+              <div class="icon-wrapper icon-orange">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-receipt-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2" /><path d="M14 8h-2.5a1.5 1.5 0 0 0 0 3h1a1.5 1.5 0 0 1 0 3h-2.5m2 0v1.5m0 -9v1.5" /></svg>
+              </div>
+            </div>
+
+            <div class="dashboard-card">
+              <div class="card-text">
+                <h3>Total Pemasukan</h3>
+                <p>Rp<?= number_format($total_pemasukan ?: 0, 0, ',', '.') ?></p>
+              </div>
+              <div class="icon-wrapper icon-cyan">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-report-money"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2" /><path d="M14 11h-2.5a1.5 1.5 0 0 0 0 3h1a1.5 1.5 0 0 1 0 3h-2.5" /><path d="M12 17v1m0 -8v1" /></svg>
               </div>
             </div>
           </div>
@@ -398,6 +506,9 @@ $laporan_data = $stmt->get_result()->fetch_assoc();
         ["Terlambat",          "<?= $laporan_data['terlambat'] ?: 0 ?>"],
         ["Rusak",              "<?= $laporan_data['rusak'] ?: 0 ?>"],
         ["Total Denda",        "Rp<?= number_format($laporan_data['total_denda'] ?: 0, 0, ',', '.') ?>"],
+        ["Pemasukan Sewa",     "Rp<?= number_format($pemasukan_sewa['pemasukan_sewa'] ?: 0, 0, ',', '.') ?>"],
+        ["Pemasukan Denda",    "Rp<?= number_format($pemasukan_denda['pemasukan_denda'] ?: 0, 0, ',', '.') ?>"],
+        ["Total Pemasukan",    "Rp<?= number_format($total_pemasukan ?: 0, 0, ',', '.') ?>"],
       ];
 
       const rows = stats.map(([label, val]) => `
