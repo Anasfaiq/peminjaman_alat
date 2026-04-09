@@ -104,7 +104,7 @@
               </svg>
               Settings
             </a>
-            <a href="#" class="dropdown-item logout">
+            <a href="../../config/logout.php" class="dropdown-item logout">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"

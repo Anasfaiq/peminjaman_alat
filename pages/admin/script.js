@@ -63,7 +63,7 @@ const formFields = {
   status: document.getElementById("status"),
   kondisi_kembali: document.getElementById("kondisi_kembali"),
   denda: document.getElementById("denda"),
-  
+
   // Select field versions (with _select suffix)
   id_user_select: document.getElementById("id_user_select"),
   id_alat_select: document.getElementById("id_alat_select"),
@@ -211,7 +211,7 @@ if (editButtons.length > 0) {
 
       // Set other fields based on available data attributes
       const dataAttributes = btn.dataset;
-      
+
       // Explicit mapping from dataset keys (camelCase) to form field names (underscore)
       const fieldMapping = {
         idPeminjaman: "id_peminjaman_select",
@@ -231,13 +231,13 @@ if (editButtons.length > 0) {
         status: "status",
         nama: "nama",
       };
-      
+
       Object.keys(dataAttributes).forEach((key) => {
         if (key !== "id") {
           // Get the mapped field name, or use the key as-is if no mapping exists
           const fieldName = fieldMapping[key] || key;
           const field = formFields[fieldName];
-          
+
           if (field) {
             field.value = dataAttributes[key];
           }

@@ -179,19 +179,19 @@ if (isset($_SESSION['error'])) {
               </svg>
               <input
                 type="text"
+                id="searchInput"
                 placeholder="Search alat..."
                 class="pl-12 w-full"
               />
             </div>
-            <select name="" id="">
-              <option value="">All</option>
-              <option value="">Computers</option>
-              <option value="">Projectors</option>
-              <option value="">Cameras</option>
-              <option value="">Audio</option>
-              <option value="">Tablets</option>
-              <option value="">Drones</option>
-              <option value="">Printers</option>
+            <select name="categoryFilter" id="categoryFilter">
+              <option value="">All Categories</option>
+              <?php
+                $kategoriQuery = mysqli_query($conn, "SELECT DISTINCT id_kategori, nama_kategori FROM kategori ORDER BY nama_kategori");
+                while ($kat = mysqli_fetch_assoc($kategoriQuery)) {
+                    echo '<option value="'.$kat['id_kategori'].'">'.$kat['nama_kategori'].'</option>';
+                }
+              ?>
             </select>
           </div>
         </section>
@@ -201,6 +201,8 @@ if (isset($_SESSION['error'])) {
               <tr>
                 <td class="table-header">Nama Alat</td>
                 <td class="table-header">Kategori</td>
+                <td class="table-header">Harga Barang</td>
+                <td class="table-header">Harga Sewa per Hari</td>
                 <td class="table-header">Stok</td>
                 <td class="table-header">Status</td>
                 <td class="table-header">Action</td>
@@ -221,9 +223,11 @@ while ($data = mysqli_fetch_assoc($query)) :
         $statusColor = "bg-gray-200 text-gray-800";
     }
     ?>
-              <tr>
+              <tr data-id-kategori="<?= $data['id_kategori']; ?>">
                 <td><?= $data['nama_alat']; ?> </td>
                 <td><?= $data['nama_kategori'] ?></td>
+                <td><?= $data['harga_barang'] ?></td>
+                <td><?= $data['harga_sewa'] ?></td>
                 <td><?= $data['stok'] ?></td>
                 <td class="equipment-status">
                   <span class="<?= $statusColor ?>"><?= $data['kondisi'] ?></span>
@@ -351,7 +355,44 @@ while ($kat = mysqli_fetch_assoc($kategoriQuery)) {
       </form>
     </div>
 
-    <script src="./script.js"></script>                    
+    <script src="./script.js"></script>
     
+    <script>
+      // Search dan Filter Functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const tableRows = document.querySelectorAll('tbody tr');
+
+        function filterTable() {
+          const searchTerm = searchInput.value.toLowerCase();
+          const selectedCategory = categoryFilter.value;
+
+          tableRows.forEach(row => {
+            // Get data dari row
+            const namaAlat = row.cells[0].textContent.toLowerCase();
+            const kategori = row.getAttribute('data-kategori') || row.cells[1].textContent;
+            const idKategori = row.getAttribute('data-id-kategori');
+
+            // Cek search term
+            const matchesSearch = namaAlat.includes(searchTerm);
+
+            // Cek category filter
+            const matchesCategory = !selectedCategory || idKategori === selectedCategory;
+
+            // Show/hide row
+            if (matchesSearch && matchesCategory) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', filterTable);
+        categoryFilter.addEventListener('change', filterTable);
+      });
+    </script>
   </body>
 </html>
