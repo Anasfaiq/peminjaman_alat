@@ -11,17 +11,20 @@
 function checkAuth($required_role = null)
 {
     if (!isset($_SESSION['id_user'])) {
+        $_SESSION['auth_error'] = 'Anda harus login terlebih dahulu!';
         header("Location: ../../index.php");
         exit();
     }
 
     if ($required_role && !isset($_SESSION['role'])) {
+        $_SESSION['auth_error'] = 'Role tidak ditentukan!';
         header("Location: ../../index.php");
         exit();
     }
 
     if ($required_role && $_SESSION['role'] !== $required_role) {
-        header("Location: ../../index.php?error=Akses Ditolak");
+        $_SESSION['auth_error'] = 'Anda tidak memiliki akses ke halaman ini! Hanya ' . ucfirst($required_role) . ' yang dapat mengakses.';
+        header("Location: ../../index.php");
         exit();
     }
 }

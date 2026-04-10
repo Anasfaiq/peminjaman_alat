@@ -1,11 +1,10 @@
 <?php
 session_start();
 include '../../config/conn.php';
+include '../../config/auth-check.php';
 include '../../config/logging.php';
 
-if (!isset($_SESSION['id_user'])) {
-    die("Belum Login!");
-}
+checkAuth('admin');
 
 $id_user = $_SESSION['id_user'];
 

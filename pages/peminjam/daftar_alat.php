@@ -1,10 +1,9 @@
 <?php
   session_start();
   include '../../config/conn.php';
+  include '../../config/auth-check.php';
 
-  if (!isset($_SESSION['id_user'])) {
-      die("Belum Login!");
-  }
+  checkAuth('peminjam');
 
   $id_user = $_SESSION['id_user'];
   $sql_user = mysqli_query($conn, "SELECT nama FROM users WHERE id_user='$id_user'");

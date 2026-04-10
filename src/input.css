@@ -177,6 +177,28 @@
     animation: slideIn 0.3s ease-out forwards;
   }
 
+  /* unauthorized access notification */
+  .auth-error-container {
+    @apply fixed top-8 left-1/2 transform -translate-x-1/2 z-50 w-96;
+    animation: slideIn 0.3s ease-out forwards;
+  }
+
+  .auth-error-alert {
+    @apply px-4 py-4 rounded-lg border border-orange-300 bg-orange-50 text-orange-700 text-sm font-medium flex items-center justify-between gap-3;
+  }
+
+  .auth-error-content {
+    @apply flex items-center gap-2;
+  }
+
+  .auth-error-icon {
+    @apply w-5 h-5 flex-shrink-0;
+  }
+
+  .auth-error-close-btn {
+    @apply text-orange-700 hover:text-orange-900 transition cursor-pointer p-1 border-none bg-transparent;
+  }
+
   .login-success-alert {
     @apply px-4 py-4 rounded-lg border border-green-300 bg-green-50 text-green-700 text-sm font-medium flex items-center justify-between gap-3;
   }
@@ -191,6 +213,36 @@
 
   .success-close-btn {
     @apply text-green-700 hover:text-green-900 transition cursor-pointer p-1 border-none bg-transparent;
+  }
+
+  /* floating alert notifications */
+  .alert-container {
+    @apply fixed top-8 left-1/2 transform -translate-x-1/2 z-50 w-96;
+    animation: slideIn 0.3s ease-out forwards;
+  }
+
+  .alert {
+    @apply px-4 py-4 rounded-lg border font-medium flex items-center justify-between gap-3;
+  }
+
+  .alert-success {
+    @apply bg-green-50 border-green-300 text-green-700;
+  }
+
+  .alert-error {
+    @apply bg-red-50 border-red-300 text-red-700;
+  }
+
+  .alert-content {
+    @apply flex items-center gap-2;
+  }
+
+  .alert-icon {
+    @apply w-5 h-5 flex-shrink-0;
+  }
+
+  .alert-close-btn {
+    @apply text-inherit hover:opacity-70 transition cursor-pointer p-1 border-none bg-transparent;
   }
 
   /* dashboard.html */

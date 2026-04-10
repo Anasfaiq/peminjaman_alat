@@ -1,12 +1,10 @@
 <?php
 session_start();
 include '../../config/conn.php';
+include '../../config/auth-check.php';
 include '../../config/payment-helper.php';
 
-if (!isset($_SESSION['id_user'])) {
-    header('Location: ../daftar_alat.php');
-    exit;
-}
+checkAuth('peminjam');
 
 if (!isset($_GET['id_peminjaman'])) {
     header('Location: ../pinjaman_user.php?error=ID peminjaman tidak ditemukan');

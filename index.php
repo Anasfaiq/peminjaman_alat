@@ -23,6 +23,27 @@
                   </div>';
             unset($_SESSION['error']);
         }
+        if (isset($_SESSION['auth_error'])) {
+            echo '<div class="auth-error-container">
+                    <div class="auth-error-alert">
+                      <div class="auth-error-content">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="auth-error-icon">
+                          <path d="M12 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20z"></path>
+                          <path d="M12 16v-4"></path>
+                          <path d="M12 8h.01"></path>
+                        </svg>
+                        <span>'.$_SESSION['auth_error'].'</span>
+                      </div>
+                      <button class="auth-error-close-btn" type="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>';
+            unset($_SESSION['auth_error']);
+        }
       ?>
       <div id="card" class="card">
         <div class="left">
@@ -108,5 +129,18 @@
     </main>
 
     <script src="script.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const closeBtn = document.querySelector('.auth-error-close-btn');
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function() {
+            const container = document.querySelector('.auth-error-container');
+            if (container) {
+              container.remove();
+            }
+          });
+        }
+      });
+    </script>
   </body>
 </html>
