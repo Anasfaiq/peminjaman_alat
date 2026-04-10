@@ -72,6 +72,39 @@
 </head>
 <body class="db-body">
 
+  <?php
+    if (isset($_SESSION['success'])) {
+      echo '<div class="login-success-container" id="successNotif">
+              <div class="login-success-alert">
+                <div class="login-success-alert-content">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  '.$_SESSION['success'].'
+                </div>
+                <button id="closeSuccessBtn" class="success-close-btn" type="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                </button>
+              </div>
+            </div>';
+      unset($_SESSION['success']);
+    }
+  ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const closeBtn = document.getElementById('closeSuccessBtn');
+      const container = document.getElementById('successNotif');
+      if (closeBtn && container) {
+        closeBtn.addEventListener('click', function() {
+          container.remove();
+        });
+      }
+    });
+  </script>
+
   <!-- Navbar -->
   <nav class="navbar-peminjam">
     <section class="left-header-peminjam">

@@ -9,6 +9,17 @@
   body {
     @apply bg-gray-100 text-gray-900;
   }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
 }
 
 @layer components {
@@ -145,6 +156,41 @@
 
   .signup-active .right-form {
     @apply translate-x-55;
+  }
+
+  /* login error notification */
+  .login-error-container {
+    @apply fixed top-8 left-1/2 transform -translate-x-1/2 z-50 w-96;
+  }
+
+  .login-error-alert {
+    @apply px-4 py-3 rounded-lg border border-red-300 bg-red-50 text-red-700 text-sm font-medium flex items-center gap-2;
+  }
+
+  .login-error-alert svg {
+    @apply w-5 h-5 flex-shrink-0;
+  }
+
+  /* login success notification */
+  .login-success-container {
+    @apply fixed top-8 right-8 z-50 w-96;
+    animation: slideIn 0.3s ease-out forwards;
+  }
+
+  .login-success-alert {
+    @apply px-4 py-4 rounded-lg border border-green-300 bg-green-50 text-green-700 text-sm font-medium flex items-center justify-between gap-3;
+  }
+
+  .login-success-alert-content {
+    @apply flex items-center gap-2;
+  }
+
+  .login-success-alert svg {
+    @apply w-5 h-5 flex-shrink-0;
+  }
+
+  .success-close-btn {
+    @apply text-green-700 hover:text-green-900 transition cursor-pointer p-1 border-none bg-transparent;
   }
 
   /* dashboard.html */
