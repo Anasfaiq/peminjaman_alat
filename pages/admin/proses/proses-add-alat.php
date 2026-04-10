@@ -13,10 +13,12 @@
   $nama_alat = trim($_POST['nama_alat'] ?? '');
   $id_kategori = $_POST['id_kategori'] ?? '';
   $kondisi = $_POST['kondisi'] ?? 'Baik';
+  $harga_barang = $_POST['harga_barang'] ?? '';
+  $harga_sewa = $_POST['harga_sewa'] ?? '';
   $stok = $_POST['stok'] ?? '';
 
   // validasi kosong
-  if ($nama_alat === '' || $id_kategori === '' || $stok === '') {
+  if ($nama_alat === '' || $id_kategori === '' || $harga_barang === '' || $harga_sewa === '' || $stok === '') {
     $_SESSION['error'] = "Semua field wajib diisi!";
     header("Location: ../alat.php");
     exit;
@@ -37,6 +39,20 @@
     exit;
   }
 
+  // validasi harga_barang adalah angka
+  if (!is_numeric($harga_barang) || $harga_barang < 0) {
+    $_SESSION['error'] = "Harga barang harus berupa angka positif!";
+    header("Location: ../alat.php");
+    exit;
+  }
+
+  // validasi harga_sewa adalah angka
+  if (!is_numeric($harga_sewa) || $harga_sewa < 0) {
+    $_SESSION['error'] = "Harga sewa harus berupa angka positif!";
+    header("Location: ../alat.php");
+    exit;
+  }
+
   // cek kategori ada atau tidak
   $cekKat = mysqli_prepare($conn, "SELECT id_kategori FROM kategori WHERE id_kategori = ?");
   mysqli_stmt_bind_param($cekKat, "i", $id_kategori);
@@ -52,14 +68,16 @@
   // simpan ke database
   $query = mysqli_prepare(
     $conn,
-    "INSERT INTO alat (nama_alat, id_kategori, kondisi, stok) VALUES (?, ?, ?, ?)"
+    "INSERT INTO alat (nama_alat, id_kategori, kondisi, harga_barang, harga_sewa, stok) VALUES (?, ?, ?, ?, ?, ?)"
   );
   mysqli_stmt_bind_param(
     $query,
-    "sisi",
+    "sisidi",
     $nama_alat,
     $id_kategori,
     $kondisi,
+    $harga_barang,
+    $harga_sewa,
     $stok
   );
 

@@ -240,6 +240,8 @@ while ($data = mysqli_fetch_assoc($query)) :
                     data-nama-alat="<?= $data['nama_alat']; ?>"
                     data-id-kategori="<?= $data['id_kategori']; ?>"
                     data-kondisi="<?= $data['kondisi']; ?>"
+                    data-harga-barang="<?= $data['harga_barang']; ?>"
+                    data-harga-sewa="<?= $data['harga_sewa']; ?>"
                     data-stok="<?= $data['stok']; ?>"
                   >
                     <svg
@@ -344,7 +346,17 @@ while ($kat = mysqli_fetch_assoc($kategoriQuery)) {
         </div>
 
         <div class="form">
-          <label>Stok</label>
+          <label>Harga Barang</label>
+          <input name="harga_barang" id="harga_barang" type="number" placeholder="Masukkan harga barang" min="0">
+        </div>
+
+        <div class="form">
+          <label>Harga Sewa per Hari</label>
+          <input name="harga_sewa" id="harga_sewa" type="number" placeholder="Masukkan harga sewa per hari" min="0">
+        </div>
+
+        <div class="form">
+          <label></label>Stok</label>
           <input name="stok" id="stok" type="number" placeholder="Masukkan jumlah stok" min="0">
         </div>
 
