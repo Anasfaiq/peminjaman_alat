@@ -13,7 +13,7 @@
   /* active borrowings — status Disetujui dan belum ada pengembalian */
   $sql_aktif = mysqli_query($conn, "
     SELECT p.id_peminjaman, p.tanggal_pinjam, p.tanggal_kembali_rencana, p.status, p.total_biaya, p.status_pembayaran,
-           a.id_alat, a.nama_alat, a.kondisi,
+           a.id_alat, a.nama_alat,
            k.nama_kategori,
            dp.jumlah,
            DATEDIFF(NOW(), p.tanggal_kembali_rencana) AS hari_terlambat
@@ -43,20 +43,28 @@
     ORDER BY p.created_at DESC
   ");
 
-  /* history — sudah dikembalikan atau ditolak */
+  /*
+   * history — sudah dikembalikan atau ditolak
+   * denda diambil dari beban_denda (bukan kolom denda di pengembalian)
+   */
   $sql_history = mysqli_query($conn, "
     SELECT p.id_peminjaman, p.tanggal_pinjam, p.tanggal_kembali_rencana, p.status, p.total_biaya, p.status_pembayaran,
            a.nama_alat,
            k.nama_kategori,
            dp.jumlah,
-           pb.tanggal_kembali, pb.kondisi_kembali, pb.denda
+           pb.tanggal_kembali, pb.kondisi_kembali,
+           COALESCE(SUM(bd.jumlah_denda), 0) AS total_denda
     FROM peminjaman p
     JOIN detail_peminjaman dp ON p.id_peminjaman = dp.id_peminjaman
     JOIN alat a ON dp.id_alat = a.id_alat
     JOIN kategori k ON a.id_kategori = k.id_kategori
     LEFT JOIN pengembalian pb ON p.id_peminjaman = pb.id_peminjaman
+    LEFT JOIN beban_denda bd ON p.id_peminjaman = bd.id_peminjaman
     WHERE p.id_user = '$id_user'
       AND (pb.id_pengembalian IS NOT NULL OR p.status = 'Ditolak')
+    GROUP BY p.id_peminjaman, p.tanggal_pinjam, p.tanggal_kembali_rencana, p.status,
+             p.total_biaya, p.status_pembayaran, a.nama_alat, k.nama_kategori,
+             dp.jumlah, pb.tanggal_kembali, pb.kondisi_kembali
     ORDER BY p.created_at DESC
   ");
 ?>
@@ -215,22 +223,23 @@
                   Kembali: <?= date('d/m/Y', strtotime($row['tanggal_kembali_rencana'])) ?>
                 </span>
               </div>
-              <!-- Info Pembayaran -->
               <div class="deskripsi-pinjaman pinjaman-info-separator">
                 <span class="text-xs">
                   Biaya: <strong><?= formatRupiah($row['total_biaya']) ?></strong>
                 </span>
-                <span class="text-xs <?= ($row['status_pembayaran'] == 'Lunas') ? 'status-paid' : 'status-unpaid' ?>">
-                  Status: <?= ($row['status_pembayaran'] == 'Lunas') ? '✓ Lunas' : '✗ Belum Bayar' ?>
-                </span>
+                <?php if ($terlambat): ?>
+                  <span class="text-xs status-unpaid">
+                    ⚠ Denda akan dihitung saat pengembalian
+                  </span>
+                <?php endif; ?>
               </div>
+              <!-- Tombol hanya Ajukan Pengembalian — pembayaran otomatis diarahkan setelahnya -->
               <div class="pinjaman-footer-buttons">
-                <button onclick="openModalKembali(<?= $row['id_peminjaman'] ?>, '<?= htmlspecialchars($row['nama_alat'], ENT_QUOTES) ?>')" class="pinjaman-footer-btn">
+                <button
+                  onclick="openModalKembali(<?= $row['id_peminjaman'] ?>, '<?= htmlspecialchars($row['nama_alat'], ENT_QUOTES) ?>')"
+                  class="pinjaman-footer-btn">
                   Ajukan Pengembalian
                 </button>
-                <a href="pembayaran.php?id_peminjaman=<?= $row['id_peminjaman'] ?>" class="pinjaman-payment-link">
-                  Pembayaran
-                </a>
               </div>
             </div>
           </div>
@@ -266,23 +275,31 @@
               <p>
                 <?= date('d/m/Y', strtotime($row['tanggal_pinjam'])) ?>
                 &mdash;
-                <?= $row['tanggal_kembali'] ? date('d/m/Y', strtotime($row['tanggal_kembali'])) : date('d/m/Y', strtotime($row['tanggal_kembali_rencana'])) ?>
+                <?= $row['tanggal_kembali']
+                    ? date('d/m/Y', strtotime($row['tanggal_kembali']))
+                    : date('d/m/Y', strtotime($row['tanggal_kembali_rencana'])) ?>
               </p>
             </div>
             <p class="history-item-description">
               <strong>Biaya Sewa:</strong> <?= formatRupiah($row['total_biaya']) ?>
             </p>
-            <?php if ($row['denda'] > 0): ?>
+            <?php if ($row['total_denda'] > 0): ?>
               <p class="history-item-denda">
-                <strong>Denda:</strong> <?= formatRupiah($row['denda']) ?>
+                <strong>Total Denda:</strong> <?= formatRupiah($row['total_denda']) ?>
               </p>
             <?php endif; ?>
             <p class="history-item-status">
-              <strong>Status Pembayaran:</strong> 
+              <strong>Status Pembayaran:</strong>
               <span class="<?= ($row['status_pembayaran'] == 'Lunas') ? 'history-item-status-paid' : 'history-item-status-unpaid' ?>">
                 <?= ($row['status_pembayaran'] == 'Lunas') ? '✓ Lunas' : '✗ Belum Bayar' ?>
               </span>
             </p>
+            <!-- Tombol bayar muncul di history kalau pengembalian sudah diajukan tapi belum lunas -->
+            <?php if ($row['status_pembayaran'] == 'Belum Dibayar' && $row['status'] !== 'Ditolak'): ?>
+              <a href="pembayaran.php?id_peminjaman=<?= $row['id_peminjaman'] ?>" class="pinjaman-footer-btn mt-2 inline-block text-center">
+                Bayar Sekarang
+              </a>
+            <?php endif; ?>
           </div>
           <div class="right-history-content">
             <?php if ($row['status'] === 'Ditolak'): ?>
@@ -326,13 +343,14 @@
         <label>Kondisi Alat saat Dikembalikan</label>
         <select name="kondisi_kembali" required>
           <option value="Baik">Baik</option>
-          <option value="Rusak">Rusak</option>
+          <option value="Rusak Ringan">Rusak Ringan (denda 25% harga barang)</option>
+          <option value="Rusak Berat">Rusak Berat (denda 50% harga barang)</option>
         </select>
       </div>
 
       <div class="button-group">
         <button type="button" class="cancel-btn" onclick="closeModalKembali()">Batal</button>
-        <button type="submit" class="simpan-btn">Ajukan</button>
+        <button type="submit" class="simpan-btn">Ajukan & Lanjut ke Pembayaran</button>
       </div>
     </form>
   </div>

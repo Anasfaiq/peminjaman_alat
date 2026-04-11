@@ -100,9 +100,7 @@
               <span class="stock badge-late">Habis</span>
             <?php endif; ?>
           </div>
-          <p class="description">Kondisi: <?= $alat['kondisi'] ?></p>
-        </div>
-        <div class="card-footer">
+          <div class="card-footer">
           <?php if ($alat['stok'] > 0): ?>
             <button
               onclick="openModal(<?= $alat['id_alat'] ?>, '<?= htmlspecialchars($alat['nama_alat'], ENT_QUOTES) ?>', <?= $alat['stok'] ?>)"
@@ -110,6 +108,7 @@
           <?php else: ?>
             <button disabled>Tidak Tersedia</button>
           <?php endif; ?>
+          </div>
         </div>
       </div>
       <?php endwhile; ?>
