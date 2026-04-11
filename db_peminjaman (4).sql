@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 09, 2026 at 11:45 AM
+-- Generation Time: Apr 11, 2026 at 02:19 AM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.16
 
@@ -31,7 +31,6 @@ CREATE TABLE `alat` (
   `id_alat` int NOT NULL,
   `id_kategori` int NOT NULL,
   `nama_alat` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
-  `kondisi` enum('Baik','Rusak Ringan','Rusak Berat') COLLATE utf8mb4_general_ci DEFAULT 'Baik',
   `harga_barang` int NOT NULL,
   `harga_sewa` int NOT NULL,
   `stok` int NOT NULL,
@@ -42,13 +41,15 @@ CREATE TABLE `alat` (
 -- Dumping data for table `alat`
 --
 
-INSERT INTO `alat` (`id_alat`, `id_kategori`, `nama_alat`, `kondisi`, `harga_barang`, `harga_sewa`, `stok`, `created_at`) VALUES
-(1, 1, 'Kamera Canon 80D', 'Baik', 9000000, 100000, 4, '2026-02-15 04:02:04'),
-(2, 1, 'Laptop ASUS ROG', 'Baik', 15000000, 150000, 2, '2026-02-15 04:02:04'),
-(3, 2, 'Bor Listrik', 'Rusak Ringan', 500000, 20000, 2, '2026-02-15 04:02:04'),
-(4, 3, 'Tripod Kamera', 'Baik', 250000, 10000, 6, '2026-02-15 04:02:04'),
-(5, 1, 'Proyektor Epson', 'Rusak Berat', 5000000, 75000, 1, '2026-02-15 04:02:04'),
-(6, 1, 'Laptop Axioo Pongo', 'Baik', 7000000, 80000, 0, '2026-04-06 11:04:22');
+INSERT INTO `alat` (`id_alat`, `id_kategori`, `nama_alat`, `harga_barang`, `harga_sewa`, `stok`, `created_at`) VALUES
+(1, 1, 'Kamera Canon 80D', 9000000, 100000, 5, '2026-02-15 04:02:04'),
+(2, 1, 'Laptop ASUS ROG', 15000000, 150000, 2, '2026-02-15 04:02:04'),
+(3, 2, 'Bor Listrik', 500000, 20000, 2, '2026-02-15 04:02:04'),
+(4, 3, 'Tripod Kamera', 250000, 10000, 6, '2026-02-15 04:02:04'),
+(5, 1, 'Proyektor Epson', 5000000, 75000, 1, '2026-02-15 04:02:04'),
+(6, 1, 'Laptop Axioo Pongo', 7000000, 80000, 0, '2026-04-06 11:04:22'),
+(9, 1, 'Redmi 13 Note', 2800000, 80000, 2, '2026-04-10 09:54:40'),
+(10, 6, 'Bola Basket', 100000, 5000, 5, '2026-04-14 01:11:24');
 
 -- --------------------------------------------------------
 
@@ -67,6 +68,18 @@ CREATE TABLE `beban_denda` (
   `tanggal_pembayaran_denda` datetime DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `beban_denda`
+--
+
+INSERT INTO `beban_denda` (`id_denda`, `id_peminjaman`, `id_pengembalian`, `tipe_denda`, `jumlah_denda`, `keterangan`, `status_pembayaran_denda`, `tanggal_pembayaran_denda`, `created_at`) VALUES
+(1, 13, 4, 'Telat', 10000, 'Terlambat 2 hari × 1 unit Bola Basket (Rp 5.000/hari/unit)', 'Lunas', '2026-04-15 08:53:34', '2026-04-14 01:48:08'),
+(2, 14, 5, 'Telat', 30000, 'Terlambat 3 hari × 2 unit Bola Basket (Rp 5.000/hari/unit)', 'Lunas', '2026-04-15 08:54:40', '2026-04-15 01:54:02'),
+(3, 12, 6, 'Telat', 320000, 'Terlambat 4 hari × 1 unit Redmi 13 Note (Rp 80.000/hari/unit)', 'Lunas', '2026-04-15 08:54:54', '2026-04-15 01:54:47'),
+(4, 11, 7, 'Telat', 80000, 'Terlambat 4 hari × 1 unit Bor Listrik (Rp 20.000/hari/unit)', 'Lunas', '2026-04-15 08:55:22', '2026-04-15 01:55:13'),
+(5, 11, 7, 'Rusak', 125000, 'Bor Listrik dikembalikan kondisi Rusak Ringan (25% × 1 unit)', 'Lunas', '2026-04-15 08:55:22', '2026-04-15 01:55:13'),
+(6, 8, 8, 'Telat', 100000, 'Terlambat 1 hari × 1 unit Kamera Canon 80D (Rp 100.000/hari/unit)', 'Lunas', '2026-04-11 09:00:59', '2026-04-11 02:00:34');
 
 -- --------------------------------------------------------
 
@@ -96,7 +109,12 @@ INSERT INTO `detail_peminjaman` (`id_detail`, `id_peminjaman`, `id_alat`, `jumla
 (8, 7, 2, 1),
 (9, 8, 1, 1),
 (10, 9, 4, 1),
-(11, 10, 4, 1);
+(11, 10, 4, 1),
+(12, 11, 3, 1),
+(13, 12, 9, 1),
+(14, 13, 10, 1),
+(15, 14, 10, 2),
+(16, 15, 5, 1);
 
 -- --------------------------------------------------------
 
@@ -118,7 +136,8 @@ CREATE TABLE `kategori` (
 INSERT INTO `kategori` (`id_kategori`, `nama_kategori`, `keterangan`, `created_at`) VALUES
 (1, 'Elektronik', 'Peralatan elektronik seperti kamera dan laptop', '2026-02-15 04:01:47'),
 (2, 'Alat Berat', 'Peralatan untuk kebutuhan teknis berat', '2026-02-15 04:01:47'),
-(3, 'Aksesoris', 'Perlengkapan tambahan alat utama', '2026-02-15 04:01:47');
+(3, 'Aksesoris', 'Perlengkapan tambahan alat utama', '2026-02-15 04:01:47'),
+(6, 'Olahraga', 'Peralatan Olahraga seperti raket badminton dan sepatu lari', '2026-04-10 09:47:38');
 
 -- --------------------------------------------------------
 
@@ -157,7 +176,36 @@ INSERT INTO `log_aktivitas` (`id_log`, `id_user`, `aktivitas`, `tabel`, `id_refe
 (15, 7, 'Melakukan pembayaran peminjaman sebesar Rp. 0', 'peminjaman', 5, '2026-04-09 09:15:59'),
 (16, 6, 'Mengubah status peminjaman menjadi Disetujui', 'peminjaman', 10, '2026-04-09 09:31:35'),
 (17, 7, 'Melakukan pembayaran peminjaman sebesar Rp. 20.000', 'peminjaman', 10, '2026-04-09 09:32:17'),
-(18, 7, 'Melakukan pembayaran peminjaman sebesar Rp. 0', 'peminjaman', 7, '2026-04-09 09:36:02');
+(18, 7, 'Melakukan pembayaran peminjaman sebesar Rp. 0', 'peminjaman', 7, '2026-04-09 09:36:02'),
+(19, 5, 'Menambah alat baru: Redmi 13 Note', 'alat', 7, '2026-04-10 09:45:36'),
+(20, 5, 'Menambah kategori baru: Olahraga', 'kategori', 6, '2026-04-10 09:47:39'),
+(21, 5, 'Mengubah kategori: Olahraga', 'kategori', 6, '2026-04-10 09:48:43'),
+(22, 5, 'Mengubah kategori: Olahraga', 'kategori', 6, '2026-04-10 09:52:19'),
+(23, 5, 'Mengubah kategori: Olahraga', 'kategori', 6, '2026-04-10 09:52:30'),
+(24, 5, 'Menghapus alat', 'alat', 7, '2026-04-10 09:52:47'),
+(25, 5, 'Menambah alat baru: Redmi 13 Note', 'alat', 8, '2026-04-10 09:54:12'),
+(26, 5, 'Menghapus alat', 'alat', 8, '2026-04-10 09:54:24'),
+(27, 5, 'Menambah alat baru: Redmi 13 Note', 'alat', 9, '2026-04-10 09:54:40'),
+(28, 6, 'Mengubah status peminjaman menjadi Disetujui', 'peminjaman', 12, '2026-04-10 10:05:41'),
+(29, 6, 'Mengubah status peminjaman menjadi Disetujui', 'peminjaman', 11, '2026-04-10 10:05:44'),
+(30, 5, 'Menambah alat baru: Bola Basket', 'alat', 10, '2026-04-14 01:11:24'),
+(31, 5, 'Mengubah alat: Bola Basket', 'alat', 10, '2026-04-14 01:13:05'),
+(32, 6, 'Mengubah status peminjaman menjadi Disetujui', 'peminjaman', 14, '2026-04-11 01:41:36'),
+(33, 6, 'Mengubah status peminjaman menjadi Disetujui', 'peminjaman', 13, '2026-04-11 01:41:39'),
+(34, 7, 'Melakukan pembayaran sebesar Rp. 0', 'peminjaman', 6, '2026-04-11 01:46:57'),
+(35, 7, 'Mengajukan pengembalian alat', 'pengembalian', 4, '2026-04-14 01:48:08'),
+(36, 7, 'Melakukan pembayaran sebesar Rp. 20.000', 'peminjaman', 13, '2026-04-15 01:53:34'),
+(37, 7, 'Mengajukan pengembalian alat', 'pengembalian', 5, '2026-04-15 01:54:02'),
+(38, 7, 'Melakukan pembayaran sebesar Rp. 50.000', 'peminjaman', 14, '2026-04-15 01:54:40'),
+(39, 7, 'Mengajukan pengembalian alat', 'pengembalian', 6, '2026-04-15 01:54:47'),
+(40, 7, 'Melakukan pembayaran sebesar Rp. 480.000', 'peminjaman', 12, '2026-04-15 01:54:54'),
+(41, 7, 'Mengajukan pengembalian alat', 'pengembalian', 7, '2026-04-15 01:55:13'),
+(42, 7, 'Melakukan pembayaran sebesar Rp. 245.000', 'peminjaman', 11, '2026-04-15 01:55:22'),
+(43, 7, 'Mengajukan pengembalian alat', 'pengembalian', 8, '2026-04-11 02:00:34'),
+(44, 7, 'Melakukan pembayaran sebesar Rp. 300.000', 'peminjaman', 8, '2026-04-11 02:00:59'),
+(45, 6, 'Mengubah status peminjaman menjadi Disetujui', 'peminjaman', 15, '2026-04-11 02:03:03'),
+(46, 7, 'Mengajukan pengembalian alat', 'pengembalian', 9, '2026-04-11 02:03:17'),
+(47, 7, 'Melakukan pembayaran sebesar Rp. 150.000', 'peminjaman', 15, '2026-04-11 02:04:11');
 
 -- --------------------------------------------------------
 
@@ -183,7 +231,12 @@ CREATE TABLE `pembayaran` (
 INSERT INTO `pembayaran` (`id_pembayaran`, `id_peminjaman`, `id_user`, `jumlah_pembayaran`, `status_pembayaran`, `tanggal_pembayaran`, `catatan`, `created_at`) VALUES
 (1, 8, 7, 200000, 'Lunas', '2026-04-09 16:12:58', 'Biaya sewa peminjaman alat', '2026-04-09 09:11:20'),
 (2, 9, 7, 20000, 'Lunas', '2026-04-09 16:15:30', 'Biaya sewa peminjaman alat', '2026-04-09 09:14:48'),
-(3, 10, 7, 20000, 'Lunas', '2026-04-09 16:32:17', 'Biaya sewa peminjaman alat', '2026-04-09 09:31:01');
+(3, 10, 7, 20000, 'Lunas', '2026-04-09 16:32:17', 'Biaya sewa peminjaman alat', '2026-04-09 09:31:01'),
+(4, 11, 7, 40000, 'Lunas', '2026-04-15 08:55:22', 'Biaya sewa peminjaman alat', '2026-04-10 08:53:20'),
+(5, 12, 7, 160000, 'Lunas', '2026-04-15 08:54:54', 'Biaya sewa peminjaman alat', '2026-04-10 09:58:34'),
+(6, 13, 7, 10000, 'Lunas', '2026-04-15 08:53:34', 'Biaya sewa peminjaman alat', '2026-04-11 01:41:06'),
+(7, 14, 7, 20000, 'Lunas', '2026-04-15 08:54:40', 'Biaya sewa peminjaman alat', '2026-04-11 01:41:15'),
+(8, 15, 7, 150000, 'Lunas', '2026-04-11 09:04:11', 'Biaya sewa peminjaman alat', '2026-04-11 02:02:22');
 
 -- --------------------------------------------------------
 
@@ -216,7 +269,12 @@ INSERT INTO `peminjaman` (`id_peminjaman`, `id_user`, `tanggal_pinjam`, `tanggal
 (7, 7, '2026-04-08', '2026-04-09', 'Disetujui', 0, 'Belum Dibayar', '2026-04-08 13:18:54'),
 (8, 7, '2026-04-09', '2026-04-10', 'Disetujui', 200000, 'Lunas', '2026-04-09 09:11:20'),
 (9, 7, '2026-04-09', '2026-04-10', 'Disetujui', 20000, 'Lunas', '2026-04-09 09:14:48'),
-(10, 7, '2026-04-09', '2026-04-10', 'Disetujui', 20000, 'Lunas', '2026-04-09 09:31:01');
+(10, 7, '2026-04-09', '2026-04-10', 'Disetujui', 20000, 'Lunas', '2026-04-09 09:31:01'),
+(11, 7, '2026-04-10', '2026-04-11', 'Disetujui', 40000, 'Lunas', '2026-04-10 08:53:20'),
+(12, 7, '2026-04-10', '2026-04-11', 'Disetujui', 160000, 'Lunas', '2026-04-10 09:58:34'),
+(13, 7, '2026-04-11', '2026-04-12', 'Disetujui', 10000, 'Lunas', '2026-04-11 01:41:06'),
+(14, 7, '2026-04-11', '2026-04-12', 'Disetujui', 20000, 'Lunas', '2026-04-11 01:41:15'),
+(15, 7, '2026-04-11', '2026-04-12', 'Disetujui', 150000, 'Lunas', '2026-04-11 02:02:22');
 
 -- --------------------------------------------------------
 
@@ -228,7 +286,7 @@ CREATE TABLE `pengembalian` (
   `id_pengembalian` int NOT NULL,
   `id_peminjaman` int NOT NULL,
   `tanggal_kembali` date NOT NULL,
-  `kondisi_kembali` enum('Baik','Rusak') COLLATE utf8mb4_general_ci DEFAULT 'Baik',
+  `kondisi_kembali` enum('Baik','Rusak Ringan','Rusak Berat') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'Baik',
   `denda` int DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -240,7 +298,13 @@ CREATE TABLE `pengembalian` (
 INSERT INTO `pengembalian` (`id_pengembalian`, `id_peminjaman`, `tanggal_kembali`, `kondisi_kembali`, `denda`, `created_at`) VALUES
 (1, 1, '2026-02-05', 'Baik', 0, '2026-02-15 04:03:03'),
 (2, 10, '2026-04-09', 'Baik', 0, '2026-04-09 10:06:41'),
-(3, 6, '2026-04-09', 'Baik', 0, '2026-04-09 10:07:41');
+(3, 6, '2026-04-09', 'Baik', 0, '2026-04-09 10:07:41'),
+(4, 13, '2026-04-14', 'Baik', 0, '2026-04-14 01:48:08'),
+(5, 14, '2026-04-15', 'Baik', 0, '2026-04-15 01:54:02'),
+(6, 12, '2026-04-15', 'Baik', 0, '2026-04-15 01:54:47'),
+(7, 11, '2026-04-15', 'Rusak Ringan', 0, '2026-04-15 01:55:13'),
+(8, 8, '2026-04-11', 'Baik', 0, '2026-04-11 02:00:34'),
+(9, 15, '2026-04-11', 'Baik', 0, '2026-04-11 02:03:17');
 
 -- --------------------------------------------------------
 
@@ -343,49 +407,49 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `alat`
 --
 ALTER TABLE `alat`
-  MODIFY `id_alat` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_alat` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `beban_denda`
 --
 ALTER TABLE `beban_denda`
-  MODIFY `id_denda` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_denda` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `detail_peminjaman`
 --
 ALTER TABLE `detail_peminjaman`
-  MODIFY `id_detail` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_detail` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `kategori`
 --
 ALTER TABLE `kategori`
-  MODIFY `id_kategori` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_kategori` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `log_aktivitas`
 --
 ALTER TABLE `log_aktivitas`
-  MODIFY `id_log` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id_log` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `pembayaran`
 --
 ALTER TABLE `pembayaran`
-  MODIFY `id_pembayaran` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_pembayaran` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `peminjaman`
 --
 ALTER TABLE `peminjaman`
-  MODIFY `id_peminjaman` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_peminjaman` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `pengembalian`
 --
 ALTER TABLE `pengembalian`
-  MODIFY `id_pengembalian` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_pengembalian` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `users`
