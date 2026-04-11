@@ -246,7 +246,6 @@ $data = mysqli_fetch_assoc($qUser);
                 <td class="table-header">Harga Barang</td>
                 <td class="table-header">Harga Sewa per Hari</td>
                 <td class="table-header">Stok</td>
-                <td class="table-header">Status</td>
                 <td class="table-header">Action</td>
               </tr>
             </thead>
@@ -254,16 +253,6 @@ $data = mysqli_fetch_assoc($qUser);
               <?php
           $no = 1;
 while ($data = mysqli_fetch_assoc($query)) :
-    $status = $data['kondisi']; // ambil dari DB
-    if ($status == "Baik") {
-        $statusColor = "bg-green-200 text-green-800";
-    } elseif ($status == "Rusak Ringan") {
-        $statusColor = "bg-yellow-200 text-yellow-800";
-    } elseif ($status == "Rusak Berat") {
-        $statusColor = "bg-red-200 text-red-800";
-    } else {
-        $statusColor = "bg-gray-200 text-gray-800";
-    }
     ?>
               <tr data-id-kategori="<?= $data['id_kategori']; ?>">
                 <td><?= $data['nama_alat']; ?> </td>
@@ -271,9 +260,6 @@ while ($data = mysqli_fetch_assoc($query)) :
                 <td><?= $data['harga_barang'] ?></td>
                 <td><?= $data['harga_sewa'] ?></td>
                 <td><?= $data['stok'] ?></td>
-                <td class="equipment-status">
-                  <span class="<?= $statusColor ?>"><?= $data['kondisi'] ?></span>
-                </td>
                 <td class="button-wrapper">
                   <a
                     href="#"
@@ -281,7 +267,6 @@ while ($data = mysqli_fetch_assoc($query)) :
                     data-id="<?= $data['id_alat']; ?>"
                     data-nama-alat="<?= $data['nama_alat']; ?>"
                     data-id-kategori="<?= $data['id_kategori']; ?>"
-                    data-kondisi="<?= $data['kondisi']; ?>"
                     data-harga-barang="<?= $data['harga_barang']; ?>"
                     data-harga-sewa="<?= $data['harga_sewa']; ?>"
                     data-stok="<?= $data['stok']; ?>"
@@ -374,16 +359,6 @@ while ($kat = mysqli_fetch_assoc($kategoriQuery)) {
     echo '<option value="'.$kat['id_kategori'].'">'.$kat['nama_kategori'].'</option>';
 }
 ?>
-          </select>
-        </div>
-
-        <div class="form">
-          <label>Kondisi</label>
-          <select name="kondisi" id="kondisi">
-            <option value="" disabled hidden selected>Pilih kondisi</option>
-            <option value="Baik">Baik</option>
-            <option value="Rusak Ringan">Rusak Ringan</option>
-            <option value="Rusak Berat">Rusak Berat</option>
           </select>
         </div>
 

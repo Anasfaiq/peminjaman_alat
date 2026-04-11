@@ -1146,7 +1146,7 @@
   }
 
   .card-footer {
-    @apply flex items-center;
+    @apply flex items-center mt-2;
   }
 
   .card-footer button {

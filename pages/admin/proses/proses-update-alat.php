@@ -13,7 +13,6 @@
   $id_alat = $_POST['id_alat'] ?? '';
   $nama_alat = trim($_POST['nama_alat'] ?? '');
   $id_kategori = $_POST['id_kategori'] ?? '';
-  $kondisi = $_POST['kondisi'] ?? 'Baik';
   $harga_barang = $_POST['harga_barang'] ?? '';
   $harga_sewa = $_POST['harga_sewa'] ?? '';
   $stok = $_POST['stok'] ?? '';
@@ -21,14 +20,6 @@
   // validasi kosong
   if ($id_alat === '' || $nama_alat === '' || $id_kategori === '' || $harga_barang === '' || $harga_sewa === '' || $stok === '') {
     $_SESSION['error'] = "Semua field wajib diisi!";
-    header("Location: ../alat.php");
-    exit;
-  }
-
-  // validasi kondisi
-  $allowedKondisi = ['Baik', 'Rusak Ringan', 'Rusak Berat'];
-  if (!in_array($kondisi, $allowedKondisi)) {
-    $_SESSION['error'] = "Kondisi tidak valid!";
     header("Location: ../alat.php");
     exit;
   }
@@ -81,14 +72,13 @@
   // update ke database
   $query = mysqli_prepare(
     $conn,
-    "UPDATE alat SET nama_alat = ?, id_kategori = ?, kondisi = ?, harga_barang = ?, harga_sewa = ?, stok = ? WHERE id_alat = ?"
+    "UPDATE alat SET nama_alat = ?, id_kategori = ?, harga_barang = ?, harga_sewa = ?, stok = ? WHERE id_alat = ?"
   );
   mysqli_stmt_bind_param(
     $query,
-    "sisiidi",
+    "siidii",
     $nama_alat,
     $id_kategori,
-    $kondisi,
     $harga_barang,
     $harga_sewa,
     $stok,
